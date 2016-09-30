@@ -10,6 +10,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.jface.dialogs.Dialog;
@@ -29,8 +30,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
-import splitterLibrary.EcoreEMF;
-import splitterLibrary.impl.SplitterLibraryFactoryImpl;
 
 public class EcoreStatisticsDialog extends Dialog{
 	
@@ -43,8 +42,12 @@ public class EcoreStatisticsDialog extends Dialog{
 	private Label lb_amountContainment;
 	private Label lb_amountNoNContainment;
 		
-	//public final String root = "platform:/resource";
-	
+	//Statistics MM
+	private Label lb_amountMM;
+	private Label lb_amountEClass;
+	private Label lb_ecoreErrors;
+	private Label lb_amountNONContainmentMM;
+	public List listWOContainmentReferences;
 	
 	public EcoreStatisticsDialog(IShellProvider parentShell) {
 		super(parentShell);
@@ -148,6 +151,54 @@ public class EcoreStatisticsDialog extends Dialog{
 		lb_amountNoNContainment = new Label(containerStats, SWT.NONE);
 		lb_amountNoNContainment.setText("Not Found");
 		
+		//Statistics of Folder
+		Label lb_title_allMMStatistics = new Label(containerStatistics, SWT.NONE);
+		lb_title_allMMStatistics.setText("All Meta-models");
+		lb_title_allMMStatistics.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
+		
+		Label lb_title_amountMM = new Label(containerStatistics, SWT.NONE);
+		lb_title_amountMM.setText("Amount of Ecores");
+		
+		lb_amountMM = new Label(containerStatistics, SWT.NONE);
+		lb_amountMM.setText("Not Found");
+		
+		Label lb_title_amountEClass = new Label(containerStatistics, SWT.NONE);
+		lb_title_amountEClass.setText("Amount of EClasses");
+		
+		lb_amountEClass = new Label(containerStatistics, SWT.NONE);
+		lb_amountEClass.setText("Amount of EClasses");
+		
+		Label lb_title_ecoreErrors = new Label(containerStatistics, SWT.NONE);
+		lb_title_ecoreErrors.setText("Errors");
+		
+		new Label(containerStatistics, SWT.NONE);
+		
+		lb_ecoreErrors = new Label(containerStatistics, SWT.NONE);
+		lb_ecoreErrors.setText("No Errors Found");
+		GridData gr_ecoreErrors = new GridData(SWT.FILL, SWT.TOP, true, false,2, 1);
+		lb_ecoreErrors.setLayoutData(gr_ecoreErrors);
+		
+		lb_amountNONContainmentMM = new Label(containerStatistics, SWT.LEFT | SWT.WRAP);
+		lb_amountNONContainmentMM.setText("Ecores Without Containment References");
+		GridData grid_amountNONContainmentMM = new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1);
+		lb_amountNONContainmentMM.setLayoutData(grid_amountNONContainmentMM);
+		
+		//Create List
+		this.listWOContainmentReferences = new List (containerStatistics, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
+		GridData grid_listWOContainmentReferences = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
+		grid_listWOContainmentReferences.heightHint = 150;
+		this.listWOContainmentReferences.setLayoutData(grid_listWOContainmentReferences);
+			
+		//Add Listeners
+		this.listWOContainmentReferences.addListener(SWT.Selection, e -> {
+					
+					String ecoreMM = listWOContainmentReferences.getItem(listWOContainmentReferences.getSelectionIndex());
+					EcoreStatisticsByName(ecoreMM);
+					System.out.println("Ecore MM: " + ecoreMM);
+					
+				});	
+		
+		
 		return container;
 	}
 
@@ -160,7 +211,7 @@ public class EcoreStatisticsDialog extends Dialog{
 	
 	@Override
     protected Point getInitialSize() {
-            return new Point(900, 600);
+            return new Point(900, 700);
     }
 	
 	//Browse Files and Folders within the workspace
@@ -182,17 +233,45 @@ public class EcoreStatisticsDialog extends Dialog{
 	public void Fill_ListEcores()
 	{
 		IFolder containerFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(new Path(address.getText()));
+		this.list.setRedraw(false);
+		this.listWOContainmentReferences.setRedraw(false);
 		this.list.removeAll();
+		this.listWOContainmentReferences.removeAll();
 		try {
 			IResource[] resources = containerFolder.members();
+			int amountEClass = 0;
+			String ecoresWithErrors = "";
+			int amountecoresWithErrors = 0;
+			int amountNONContainment = 0;
 			for (int i = 0; i < resources.length; i++) {
-				IResource res = resources[i];
+				IResource res = resources[i];				
 				if(isEcore(res)==true)
 				{
-					this.list.add(res.getName());					
+					this.list.add(res.getName());		
+					EcoreStatistics ecore = new EcoreStatistics(URI.createPlatformResourceURI(address.getText() + "/" + res.getName(),true));
+					if(ecore.getList_classes()!=null)
+					{
+						amountEClass = amountEClass + ecore.getList_classes().size();
+						int amountOfContainment = AmountContainment(ecore.getList_classes());
+						if(amountOfContainment == 0)
+						{
+							this.listWOContainmentReferences.add(res.getName());	
+							amountNONContainment = amountNONContainment + 1;
+						}
+					}
+					else
+					{
+						ecoresWithErrors = ecoresWithErrors + res.getName() + ", ";
+						amountecoresWithErrors = amountecoresWithErrors + 1;
+					}
 				}
 			}			
-			
+			lb_amountMM.setText(Integer.toString(this.list.getItemCount()));
+			lb_amountEClass.setText(Integer.toString(amountEClass));
+			lb_amountNONContainmentMM.setText("Found without Containment References: " + Integer.toString(amountNONContainment));
+			lb_ecoreErrors.setText(Integer.toString(amountecoresWithErrors) + ": "+  ecoresWithErrors);
+			this.list.setRedraw(true);
+			this.listWOContainmentReferences.setRedraw(true);
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -213,11 +292,20 @@ public class EcoreStatisticsDialog extends Dialog{
 	public void EcoreStatisticsByName(String ecoreMM)
 	{
 		String path = "platform:/resource/" + address.getText() + "/" + ecoreMM;
-		EcoreEMF nemf = new SplitterLibraryFactoryImpl().createEcoreEMF();
-		nemf.setFileuri(path);
-		lb_amountClasses.setText(Integer.toString(nemf.getList_classes().size()));
-		lb_amountContainment.setText(Integer.toString(AmountContainment(nemf.getList_classes())));
-		lb_amountNoNContainment.setText(Integer.toString(AmountNonContainment(nemf.getList_classes())));
+		EcoreStatistics nemf = new EcoreStatistics(URI.createURI(path, false));
+		
+		if(nemf.getList_classes()!=null)
+		{	
+			lb_amountClasses.setText(Integer.toString(nemf.getList_classes().size()));
+			lb_amountContainment.setText(Integer.toString(AmountContainment(nemf.getList_classes())));
+			lb_amountNoNContainment.setText(Integer.toString(AmountNonContainment(nemf.getList_classes())));
+		}
+		else
+		{
+			lb_amountClasses.setText("Not Found, try to open with the Ecore Editor");
+			lb_amountContainment.setText("Not Found");
+			lb_amountNoNContainment.setText("Not Found");
+		}
 	}
 	
 	private int AmountContainment(EList<EClass> listEClass)
