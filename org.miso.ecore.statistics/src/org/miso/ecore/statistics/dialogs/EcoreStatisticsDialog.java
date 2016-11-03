@@ -1,7 +1,11 @@
 package org.miso.ecore.statistics.dialogs;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -9,10 +13,16 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
@@ -30,14 +40,25 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
+import dslHeuristicVisualization.ConcreteStrategyContainmentDiagramElement;
+import dslHeuristicVisualization.DslHeuristicVisualizationFactory;
+import dslHeuristicVisualization.EcoreMatrixContainment;
+import graph.Graph;
+import graph.GraphElement;
+import graph.GraphRoot;
+import graph.Node;
+import graph.impl.GraphFactoryImpl;
+
 
 public class EcoreStatisticsDialog extends Dialog{
 	
+	public EcoreStatistics nemf;
 	//Widgets
 	private Text address;
 	public List list;
 	
 	//Label 
+	private Label lb_NameEcore;
 	private Label lb_amountClasses;
 	private Label lb_amountContainment;
 	private Label lb_amountNoNContainment;
@@ -52,6 +73,7 @@ public class EcoreStatisticsDialog extends Dialog{
 	public EcoreStatisticsDialog(IShellProvider parentShell) {
 		super(parentShell);
 		this.address = null;
+		this.nemf = null;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -120,12 +142,20 @@ public class EcoreStatisticsDialog extends Dialog{
 			
 		});		
 		
-		
 		//Composite of Statistics
 		Composite containerStats = new Composite(containerStatistics, SWT.NONE);
 		GridLayout layout_containerStats = new GridLayout();
 		layout_containerStats.numColumns = 2;
 		containerStats.setLayout(layout_containerStats);
+		
+		//Title of Meta-models
+		Label lb_titleEcore = new Label(containerStats, SWT.NONE);
+		lb_titleEcore.setText("Name of Meta-model: ");
+		
+		//Name 
+		lb_NameEcore = new Label(containerStats, SWT.NONE);
+		lb_NameEcore.setText("Not Found");
+		lb_NameEcore.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
 		
 		//Amount of Classes
 		Label lb_title_amountClasses = new Label(containerStats, SWT.NONE);
@@ -199,6 +229,42 @@ public class EcoreStatisticsDialog extends Dialog{
 				});	
 		
 		
+		new Label(containerStatistics, SWT.NONE);
+		
+		Button btnGenContainmentTree = new Button(containerStatistics, SWT.NONE);
+		btnGenContainmentTree.setText("Generate Visualization");
+		
+		btnGenContainmentTree.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				GenerateVisualization(nemf);
+			}		
+			
+		});
+		
+				
+		Button btnGenAllContainmentTree = new Button(containerStatistics, SWT.NONE);
+		btnGenAllContainmentTree.setText("Generate All Visualizations");
+		
+		btnGenAllContainmentTree.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				//String path = "platform:/resource" + address.getText() + "/" + ecoreMM;
+				//nemf = new EcoreStatistics(URI.createURI(path, false));
+				String[] listItems = list.getItems();
+				for (String string : listItems) {
+					String path = "platform:/resource" + address.getText() + "/" + string;
+					EcoreStatistics ecoreStats = new EcoreStatistics(URI.createURI(path, false));
+					GenerateVisualization(ecoreStats);
+				}				
+			}		
+			
+		});
+		
 		return container;
 	}
 
@@ -211,7 +277,7 @@ public class EcoreStatisticsDialog extends Dialog{
 	
 	@Override
     protected Point getInitialSize() {
-            return new Point(900, 700);
+            return new Point(900,800);
     }
 	
 	//Browse Files and Folders within the workspace
@@ -291,17 +357,19 @@ public class EcoreStatisticsDialog extends Dialog{
 	
 	public void EcoreStatisticsByName(String ecoreMM)
 	{
-		String path = "platform:/resource/" + address.getText() + "/" + ecoreMM;
-		EcoreStatistics nemf = new EcoreStatistics(URI.createURI(path, false));
+		String path = "platform:/resource" + address.getText() + "/" + ecoreMM;
+		nemf = new EcoreStatistics(URI.createURI(path, false));
 		
 		if(nemf.getList_classes()!=null)
 		{	
+			lb_NameEcore.setText(nemf.getResource().getURI().lastSegment());
 			lb_amountClasses.setText(Integer.toString(nemf.getList_classes().size()));
 			lb_amountContainment.setText(Integer.toString(AmountContainment(nemf.getList_classes())));
 			lb_amountNoNContainment.setText(Integer.toString(AmountNonContainment(nemf.getList_classes())));
 		}
 		else
 		{
+			lb_NameEcore.setText(nemf.getResource().getURI().lastSegment());
 			lb_amountClasses.setText("Not Found, try to open with the Ecore Editor");
 			lb_amountContainment.setText("Not Found");
 			lb_amountNoNContainment.setText("Not Found");
@@ -334,5 +402,121 @@ public class EcoreStatisticsDialog extends Dialog{
 		}
 		return amount;
 	}
+	
+	public void GenerateVisualization(EcoreStatistics ecoreStats)
+	{
+		//Generate Tree of Containments
+		if(ecoreStats!=null)
+		{
+			EcoreMatrixContainment ecoreContainment = DslHeuristicVisualizationFactory.eINSTANCE.createEcoreMatrixContainment();
+			ecoreContainment.GetDirectMatrixContainment(ecoreStats.getList_classes());
+			ecoreContainment.GetPathMatrix();
+			
+			ConcreteStrategyContainmentDiagramElement elements =  DslHeuristicVisualizationFactory.eINSTANCE.createConcreteStrategyContainmentDiagramElement();
+						
+			Graph graph = GraphFactoryImpl.eINSTANCE.createGraph();
+			Iterator<EClass> itListAllClasses = ecoreStats.getList_classes().iterator();
+			Map<EClass,GraphElement> mapElements = new HashMap<EClass,GraphElement>();
+			while (itListAllClasses.hasNext()) {
+				EClass eClass = (EClass) itListAllClasses.next();
+				GraphRoot element = GraphFactoryImpl.eINSTANCE.createGraphRoot();
+				element.setEClass(eClass);
+				graph.getElements().add(element);		
+				
+				mapElements.clear();
+				mapElements.put(eClass, element);
+				ArrayList<GraphElement> arrayList = new ArrayList<GraphElement>(Arrays.asList(element));
+				
+				for (int i = 0; i < arrayList.size(); i++) {
+					Node treeElement = (Node) arrayList.get(i);
+					EClass currentEClass = treeElement.getEClass();
+					EList<EClass> possible = elements.PossibleElements(currentEClass, ecoreContainment.getDirect_MatrixContainment(), ecoreStats.getList_classes());
+					Iterator<EClass> itpossible = possible.iterator();					
+					while (itpossible.hasNext()) {
+						
+						EClass eClassP = (EClass) itpossible.next();
+						GraphElement mapElement = mapElements.get(eClassP);
+						if(mapElement == null)
+						{
+							Node node = GraphFactoryImpl.eINSTANCE.createNode();
+							node.setEClass(eClassP);
+							treeElement.getChildrenContainments().add(node);
+							mapElements.put(eClassP,node);
+							ContainmentReferences(treeElement, node);
+							arrayList.add(node);
+						}
+						else
+						{
+							treeElement.getChildrenReferences().add(mapElement);
+						}
+					}
+					if(itpossible.hasNext() == false)
+					{
+						int height = CalculatedTreeHeight(treeElement);
+						int currentHeight = element.getHeight();
+						if(height>currentHeight)
+							element.setHeight(height);
+					}
+				}
+				element.setAmountOfNodes(arrayList.size());
+			}
+						
+			ResourceSet reset = new ResourceSetImpl();					
+			Resource res = reset.createResource(ecoreStats.getEcoreURI().trimFileExtension().appendFileExtension("tree"));
+			res.getContents().add(graph);
+			
+			try {
+				res.save(null);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}		
+								
+		}			
+		System.out.println("Generate Visualization");
+	}
+
+	private int CalculatedTreeHeight(Node treeElement) {
+
+		int height = 0;
+		EObject eObject = treeElement;
+		while (eObject!=null) {
+			
+			if(eObject instanceof GraphRoot)
+				return height;
+			else
+			{
+				height = height + 1;
+				eObject = eObject.eContainer();
+			}			
+		}
+		return height;
+	}
+	
+	private void ContainmentReferences(Node from, Node to)
+	{
+		EClass toEClass = to.getEClass();
+		EList<EClass> listSuperTypes = new BasicEList<EClass>();
+		listSuperTypes.add(toEClass);
+		listSuperTypes.addAll(toEClass.getEAllSuperTypes());		
+		Iterator<EReference> itContainments = from.getEClass().getEAllContainments().iterator();
+		
+		while (itContainments.hasNext()) {
+			
+			EReference eReference = (EReference) itContainments.next();
+			EClassifier eClassifier = eReference.getEType();
+			if(eClassifier instanceof EClass)
+			{
+				EClass eClass = (EClass) eClassifier;
+				int indexEClass = listSuperTypes.indexOf(eClass);
+				if(indexEClass!=-1)
+				{
+					to.getContainmentReferences().add(eReference);
+				}
+			}
+		}		
+	}
+	
+	
 	
 }

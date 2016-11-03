@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="graph" nsURI="http://miso.org/tree/representation/1.0" nsPrefix="graph">
+  <eClassifiers xsi:type="ecore:EClass" name="Graph">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//GraphElement" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GraphElement" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eClass" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Node" eSuperTypes="#//GraphElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="childrenContainments" upperBound="-1"
+        eType="#//GraphElement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="childrenReferences" upperBound="-1"
+        eType="#//GraphElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="referencesTo" upperBound="-1"
+        eType="#//GraphElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containmentReferences"
+        upperBound="-1" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GraphRoot" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="height" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountOfNodes" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+</ecore:EPackage>

@@ -1,7 +1,5 @@
 package org.miso.ecore.statistics.dialogs;
 
-import java.util.Iterator;
-
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -83,5 +81,7 @@ public class EcoreStatistics {
 		}
 		return this.listEClasses;
 	}
+	
+	
 
 }

@@ -60,4 +60,20 @@
       </menuContribution>
    </extension>
 
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated Tree -->
+      <package
+            uri="http://miso.org/tree/representation/1.0"
+            class="tree.TreePackage"
+            genModel="model/Tree.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated Graph -->
+      <package
+            uri="http://miso.org/tree/representation/1.0"
+            class="graph.GraphPackage"
+            genModel="model/Graph.genmodel"/>
+   </extension>
+
 </plugin>
