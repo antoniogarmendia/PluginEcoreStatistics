@@ -76,12 +76,16 @@ public class GraphAdapterFactory extends AdapterFactoryImpl {
 				return createGraphElementAdapter();
 			}
 			@Override
-			public Adapter caseNode(Node object) {
-				return createNodeAdapter();
+			public Adapter caseAbstractNode(AbstractNode object) {
+				return createAbstractNodeAdapter();
 			}
 			@Override
 			public Adapter caseGraphRoot(GraphRoot object) {
 				return createGraphRootAdapter();
+			}
+			@Override
+			public Adapter caseNode(Node object) {
+				return createNodeAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -128,6 +132,20 @@ public class GraphAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createGraphElementAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link graph.AbstractNode <em>Abstract Node</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see graph.AbstractNode
+	 * @generated
+	 */
+	public Adapter createAbstractNodeAdapter() {
 		return null;
 	}
 

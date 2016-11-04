@@ -2,6 +2,7 @@
  */
 package graph.impl;
 
+import graph.AbstractNode;
 import graph.Graph;
 import graph.GraphElement;
 import graph.GraphFactory;
@@ -36,6 +37,13 @@ public class GraphPackageImpl extends EPackageImpl implements GraphPackage {
 	 * @generated
 	 */
 	private EClass graphElementEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass abstractNodeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -162,44 +170,53 @@ public class GraphPackageImpl extends EPackageImpl implements GraphPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getAbstractNode() {
+		return abstractNodeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getAbstractNode_ChildrenContainments() {
+		return (EReference)abstractNodeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getAbstractNode_ChildrenReferences() {
+		return (EReference)abstractNodeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getAbstractNode_ReferencesTo() {
+		return (EReference)abstractNodeEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getAbstractNode_ContainmentReferences() {
+		return (EReference)abstractNodeEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getNode() {
 		return nodeEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getNode_ChildrenContainments() {
-		return (EReference)nodeEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getNode_ChildrenReferences() {
-		return (EReference)nodeEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getNode_ReferencesTo() {
-		return (EReference)nodeEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getNode_ContainmentReferences() {
-		return (EReference)nodeEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -254,15 +271,17 @@ public class GraphPackageImpl extends EPackageImpl implements GraphPackage {
 		graphElementEClass = createEClass(GRAPH_ELEMENT);
 		createEReference(graphElementEClass, GRAPH_ELEMENT__ECLASS);
 
-		nodeEClass = createEClass(NODE);
-		createEReference(nodeEClass, NODE__CHILDREN_CONTAINMENTS);
-		createEReference(nodeEClass, NODE__CHILDREN_REFERENCES);
-		createEReference(nodeEClass, NODE__REFERENCES_TO);
-		createEReference(nodeEClass, NODE__CONTAINMENT_REFERENCES);
+		abstractNodeEClass = createEClass(ABSTRACT_NODE);
+		createEReference(abstractNodeEClass, ABSTRACT_NODE__CHILDREN_CONTAINMENTS);
+		createEReference(abstractNodeEClass, ABSTRACT_NODE__CHILDREN_REFERENCES);
+		createEReference(abstractNodeEClass, ABSTRACT_NODE__REFERENCES_TO);
+		createEReference(abstractNodeEClass, ABSTRACT_NODE__CONTAINMENT_REFERENCES);
 
 		graphRootEClass = createEClass(GRAPH_ROOT);
 		createEAttribute(graphRootEClass, GRAPH_ROOT__HEIGHT);
 		createEAttribute(graphRootEClass, GRAPH_ROOT__AMOUNT_OF_NODES);
+
+		nodeEClass = createEClass(NODE);
 	}
 
 	/**
@@ -293,8 +312,9 @@ public class GraphPackageImpl extends EPackageImpl implements GraphPackage {
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		nodeEClass.getESuperTypes().add(this.getGraphElement());
-		graphRootEClass.getESuperTypes().add(this.getNode());
+		abstractNodeEClass.getESuperTypes().add(this.getGraphElement());
+		graphRootEClass.getESuperTypes().add(this.getAbstractNode());
+		nodeEClass.getESuperTypes().add(this.getAbstractNode());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(graphEClass, Graph.class, "Graph", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -303,15 +323,17 @@ public class GraphPackageImpl extends EPackageImpl implements GraphPackage {
 		initEClass(graphElementEClass, GraphElement.class, "GraphElement", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getGraphElement_EClass(), ecorePackage.getEClass(), null, "eClass", null, 0, 1, GraphElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(nodeEClass, Node.class, "Node", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getNode_ChildrenContainments(), this.getGraphElement(), null, "childrenContainments", null, 0, -1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getNode_ChildrenReferences(), this.getGraphElement(), null, "childrenReferences", null, 0, -1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getNode_ReferencesTo(), this.getGraphElement(), null, "referencesTo", null, 0, -1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getNode_ContainmentReferences(), ecorePackage.getEReference(), null, "containmentReferences", null, 0, -1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(abstractNodeEClass, AbstractNode.class, "AbstractNode", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getAbstractNode_ChildrenContainments(), this.getGraphElement(), null, "childrenContainments", null, 0, -1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAbstractNode_ChildrenReferences(), this.getGraphElement(), null, "childrenReferences", null, 0, -1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAbstractNode_ReferencesTo(), this.getGraphElement(), null, "referencesTo", null, 0, -1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAbstractNode_ContainmentReferences(), ecorePackage.getEReference(), null, "containmentReferences", null, 0, -1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(graphRootEClass, GraphRoot.class, "GraphRoot", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getGraphRoot_Height(), ecorePackage.getEInt(), "height", null, 0, 1, GraphRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getGraphRoot_AmountOfNodes(), ecorePackage.getEInt(), "amountOfNodes", null, 0, 1, GraphRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(nodeEClass, Node.class, "Node", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

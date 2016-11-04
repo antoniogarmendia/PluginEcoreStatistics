@@ -8,7 +8,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="GraphElement" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="eClass" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Node" eSuperTypes="#//GraphElement">
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractNode" abstract="true" eSuperTypes="#//GraphElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="childrenContainments" upperBound="-1"
         eType="#//GraphElement" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="childrenReferences" upperBound="-1"
@@ -18,8 +18,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="containmentReferences"
         upperBound="-1" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="GraphRoot" eSuperTypes="#//Node">
+  <eClassifiers xsi:type="ecore:EClass" name="GraphRoot" eSuperTypes="#//AbstractNode">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="height" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountOfNodes" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Node" eSuperTypes="#//AbstractNode"/>
 </ecore:EPackage>

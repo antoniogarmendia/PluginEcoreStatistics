@@ -78,18 +78,26 @@ public class GraphSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case GraphPackage.NODE: {
-				Node node = (Node)theEObject;
-				T result = caseNode(node);
-				if (result == null) result = caseGraphElement(node);
+			case GraphPackage.ABSTRACT_NODE: {
+				AbstractNode abstractNode = (AbstractNode)theEObject;
+				T result = caseAbstractNode(abstractNode);
+				if (result == null) result = caseGraphElement(abstractNode);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case GraphPackage.GRAPH_ROOT: {
 				GraphRoot graphRoot = (GraphRoot)theEObject;
 				T result = caseGraphRoot(graphRoot);
-				if (result == null) result = caseNode(graphRoot);
+				if (result == null) result = caseAbstractNode(graphRoot);
 				if (result == null) result = caseGraphElement(graphRoot);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case GraphPackage.NODE: {
+				Node node = (Node)theEObject;
+				T result = caseNode(node);
+				if (result == null) result = caseAbstractNode(node);
+				if (result == null) result = caseGraphElement(node);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -124,6 +132,21 @@ public class GraphSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseGraphElement(GraphElement object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Abstract Node</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Abstract Node</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseAbstractNode(AbstractNode object) {
 		return null;
 	}
 

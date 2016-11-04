@@ -84,7 +84,7 @@ public interface GraphPackage extends EPackage {
 	 * @see graph.impl.GraphPackageImpl#getNode()
 	 * @generated
 	 */
-	int NODE = 2;
+	int NODE = 4;
 
 	/**
 	 * The meta object id for the '{@link graph.impl.GraphImpl <em>Graph</em>}' class.
@@ -151,67 +151,14 @@ public interface GraphPackage extends EPackage {
 	int GRAPH_ELEMENT_OPERATION_COUNT = 0;
 
 	/**
-	 * The feature id for the '<em><b>EClass</b></em>' reference.
+	 * The meta object id for the '{@link graph.impl.AbstractNodeImpl <em>Abstract Node</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @see graph.impl.AbstractNodeImpl
+	 * @see graph.impl.GraphPackageImpl#getAbstractNode()
 	 * @generated
-	 * @ordered
 	 */
-	int NODE__ECLASS = GRAPH_ELEMENT__ECLASS;
-
-	/**
-	 * The feature id for the '<em><b>Children Containments</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int NODE__CHILDREN_CONTAINMENTS = GRAPH_ELEMENT_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Children References</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int NODE__CHILDREN_REFERENCES = GRAPH_ELEMENT_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>References To</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int NODE__REFERENCES_TO = GRAPH_ELEMENT_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Containment References</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int NODE__CONTAINMENT_REFERENCES = GRAPH_ELEMENT_FEATURE_COUNT + 3;
-
-	/**
-	 * The number of structural features of the '<em>Node</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int NODE_FEATURE_COUNT = GRAPH_ELEMENT_FEATURE_COUNT + 4;
-
-	/**
-	 * The number of operations of the '<em>Node</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int NODE_OPERATION_COUNT = GRAPH_ELEMENT_OPERATION_COUNT + 0;
+	int ABSTRACT_NODE = 2;
 
 	/**
 	 * The feature id for the '<em><b>EClass</b></em>' reference.
@@ -220,7 +167,7 @@ public interface GraphPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_ROOT__ECLASS = NODE__ECLASS;
+	int ABSTRACT_NODE__ECLASS = GRAPH_ELEMENT__ECLASS;
 
 	/**
 	 * The feature id for the '<em><b>Children Containments</b></em>' containment reference list.
@@ -229,7 +176,7 @@ public interface GraphPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_ROOT__CHILDREN_CONTAINMENTS = NODE__CHILDREN_CONTAINMENTS;
+	int ABSTRACT_NODE__CHILDREN_CONTAINMENTS = GRAPH_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Children References</b></em>' reference list.
@@ -238,7 +185,7 @@ public interface GraphPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_ROOT__CHILDREN_REFERENCES = NODE__CHILDREN_REFERENCES;
+	int ABSTRACT_NODE__CHILDREN_REFERENCES = GRAPH_ELEMENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>References To</b></em>' reference list.
@@ -247,7 +194,7 @@ public interface GraphPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_ROOT__REFERENCES_TO = NODE__REFERENCES_TO;
+	int ABSTRACT_NODE__REFERENCES_TO = GRAPH_ELEMENT_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Containment References</b></em>' reference list.
@@ -256,7 +203,70 @@ public interface GraphPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_ROOT__CONTAINMENT_REFERENCES = NODE__CONTAINMENT_REFERENCES;
+	int ABSTRACT_NODE__CONTAINMENT_REFERENCES = GRAPH_ELEMENT_FEATURE_COUNT + 3;
+
+	/**
+	 * The number of structural features of the '<em>Abstract Node</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ABSTRACT_NODE_FEATURE_COUNT = GRAPH_ELEMENT_FEATURE_COUNT + 4;
+
+	/**
+	 * The number of operations of the '<em>Abstract Node</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ABSTRACT_NODE_OPERATION_COUNT = GRAPH_ELEMENT_OPERATION_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>EClass</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GRAPH_ROOT__ECLASS = ABSTRACT_NODE__ECLASS;
+
+	/**
+	 * The feature id for the '<em><b>Children Containments</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GRAPH_ROOT__CHILDREN_CONTAINMENTS = ABSTRACT_NODE__CHILDREN_CONTAINMENTS;
+
+	/**
+	 * The feature id for the '<em><b>Children References</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GRAPH_ROOT__CHILDREN_REFERENCES = ABSTRACT_NODE__CHILDREN_REFERENCES;
+
+	/**
+	 * The feature id for the '<em><b>References To</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GRAPH_ROOT__REFERENCES_TO = ABSTRACT_NODE__REFERENCES_TO;
+
+	/**
+	 * The feature id for the '<em><b>Containment References</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GRAPH_ROOT__CONTAINMENT_REFERENCES = ABSTRACT_NODE__CONTAINMENT_REFERENCES;
 
 	/**
 	 * The feature id for the '<em><b>Height</b></em>' attribute.
@@ -265,7 +275,7 @@ public interface GraphPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_ROOT__HEIGHT = NODE_FEATURE_COUNT + 0;
+	int GRAPH_ROOT__HEIGHT = ABSTRACT_NODE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Amount Of Nodes</b></em>' attribute.
@@ -274,7 +284,7 @@ public interface GraphPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_ROOT__AMOUNT_OF_NODES = NODE_FEATURE_COUNT + 1;
+	int GRAPH_ROOT__AMOUNT_OF_NODES = ABSTRACT_NODE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Root</em>' class.
@@ -283,7 +293,7 @@ public interface GraphPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_ROOT_FEATURE_COUNT = NODE_FEATURE_COUNT + 2;
+	int GRAPH_ROOT_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Root</em>' class.
@@ -292,7 +302,70 @@ public interface GraphPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_ROOT_OPERATION_COUNT = NODE_OPERATION_COUNT + 0;
+	int GRAPH_ROOT_OPERATION_COUNT = ABSTRACT_NODE_OPERATION_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>EClass</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NODE__ECLASS = ABSTRACT_NODE__ECLASS;
+
+	/**
+	 * The feature id for the '<em><b>Children Containments</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NODE__CHILDREN_CONTAINMENTS = ABSTRACT_NODE__CHILDREN_CONTAINMENTS;
+
+	/**
+	 * The feature id for the '<em><b>Children References</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NODE__CHILDREN_REFERENCES = ABSTRACT_NODE__CHILDREN_REFERENCES;
+
+	/**
+	 * The feature id for the '<em><b>References To</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NODE__REFERENCES_TO = ABSTRACT_NODE__REFERENCES_TO;
+
+	/**
+	 * The feature id for the '<em><b>Containment References</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NODE__CONTAINMENT_REFERENCES = ABSTRACT_NODE__CONTAINMENT_REFERENCES;
+
+	/**
+	 * The number of structural features of the '<em>Node</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Node</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NODE_OPERATION_COUNT = ABSTRACT_NODE_OPERATION_COUNT + 0;
 
 
 	/**
@@ -349,6 +422,60 @@ public interface GraphPackage extends EPackage {
 	EReference getGraphElement_EClass();
 
 	/**
+	 * Returns the meta object for class '{@link graph.AbstractNode <em>Abstract Node</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Abstract Node</em>'.
+	 * @see graph.AbstractNode
+	 * @generated
+	 */
+	EClass getAbstractNode();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link graph.AbstractNode#getChildrenContainments <em>Children Containments</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Children Containments</em>'.
+	 * @see graph.AbstractNode#getChildrenContainments()
+	 * @see #getAbstractNode()
+	 * @generated
+	 */
+	EReference getAbstractNode_ChildrenContainments();
+
+	/**
+	 * Returns the meta object for the reference list '{@link graph.AbstractNode#getChildrenReferences <em>Children References</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Children References</em>'.
+	 * @see graph.AbstractNode#getChildrenReferences()
+	 * @see #getAbstractNode()
+	 * @generated
+	 */
+	EReference getAbstractNode_ChildrenReferences();
+
+	/**
+	 * Returns the meta object for the reference list '{@link graph.AbstractNode#getReferencesTo <em>References To</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>References To</em>'.
+	 * @see graph.AbstractNode#getReferencesTo()
+	 * @see #getAbstractNode()
+	 * @generated
+	 */
+	EReference getAbstractNode_ReferencesTo();
+
+	/**
+	 * Returns the meta object for the reference list '{@link graph.AbstractNode#getContainmentReferences <em>Containment References</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Containment References</em>'.
+	 * @see graph.AbstractNode#getContainmentReferences()
+	 * @see #getAbstractNode()
+	 * @generated
+	 */
+	EReference getAbstractNode_ContainmentReferences();
+
+	/**
 	 * Returns the meta object for class '{@link graph.Node <em>Node</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -357,50 +484,6 @@ public interface GraphPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getNode();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link graph.Node#getChildrenContainments <em>Children Containments</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Children Containments</em>'.
-	 * @see graph.Node#getChildrenContainments()
-	 * @see #getNode()
-	 * @generated
-	 */
-	EReference getNode_ChildrenContainments();
-
-	/**
-	 * Returns the meta object for the reference list '{@link graph.Node#getChildrenReferences <em>Children References</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Children References</em>'.
-	 * @see graph.Node#getChildrenReferences()
-	 * @see #getNode()
-	 * @generated
-	 */
-	EReference getNode_ChildrenReferences();
-
-	/**
-	 * Returns the meta object for the reference list '{@link graph.Node#getReferencesTo <em>References To</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>References To</em>'.
-	 * @see graph.Node#getReferencesTo()
-	 * @see #getNode()
-	 * @generated
-	 */
-	EReference getNode_ReferencesTo();
-
-	/**
-	 * Returns the meta object for the reference list '{@link graph.Node#getContainmentReferences <em>Containment References</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Containment References</em>'.
-	 * @see graph.Node#getContainmentReferences()
-	 * @see #getNode()
-	 * @generated
-	 */
-	EReference getNode_ContainmentReferences();
 
 	/**
 	 * Returns the meta object for class '{@link graph.Graph <em>Graph</em>}'.
@@ -491,6 +574,48 @@ public interface GraphPackage extends EPackage {
 		EReference GRAPH_ELEMENT__ECLASS = eINSTANCE.getGraphElement_EClass();
 
 		/**
+		 * The meta object literal for the '{@link graph.impl.AbstractNodeImpl <em>Abstract Node</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see graph.impl.AbstractNodeImpl
+		 * @see graph.impl.GraphPackageImpl#getAbstractNode()
+		 * @generated
+		 */
+		EClass ABSTRACT_NODE = eINSTANCE.getAbstractNode();
+
+		/**
+		 * The meta object literal for the '<em><b>Children Containments</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ABSTRACT_NODE__CHILDREN_CONTAINMENTS = eINSTANCE.getAbstractNode_ChildrenContainments();
+
+		/**
+		 * The meta object literal for the '<em><b>Children References</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ABSTRACT_NODE__CHILDREN_REFERENCES = eINSTANCE.getAbstractNode_ChildrenReferences();
+
+		/**
+		 * The meta object literal for the '<em><b>References To</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ABSTRACT_NODE__REFERENCES_TO = eINSTANCE.getAbstractNode_ReferencesTo();
+
+		/**
+		 * The meta object literal for the '<em><b>Containment References</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ABSTRACT_NODE__CONTAINMENT_REFERENCES = eINSTANCE.getAbstractNode_ContainmentReferences();
+
+		/**
 		 * The meta object literal for the '{@link graph.impl.NodeImpl <em>Node</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -499,38 +624,6 @@ public interface GraphPackage extends EPackage {
 		 * @generated
 		 */
 		EClass NODE = eINSTANCE.getNode();
-
-		/**
-		 * The meta object literal for the '<em><b>Children Containments</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference NODE__CHILDREN_CONTAINMENTS = eINSTANCE.getNode_ChildrenContainments();
-
-		/**
-		 * The meta object literal for the '<em><b>Children References</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference NODE__CHILDREN_REFERENCES = eINSTANCE.getNode_ChildrenReferences();
-
-		/**
-		 * The meta object literal for the '<em><b>References To</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference NODE__REFERENCES_TO = eINSTANCE.getNode_ReferencesTo();
-
-		/**
-		 * The meta object literal for the '<em><b>Containment References</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference NODE__CONTAINMENT_REFERENCES = eINSTANCE.getNode_ContainmentReferences();
 
 		/**
 		 * The meta object literal for the '{@link graph.impl.GraphImpl <em>Graph</em>}' class.

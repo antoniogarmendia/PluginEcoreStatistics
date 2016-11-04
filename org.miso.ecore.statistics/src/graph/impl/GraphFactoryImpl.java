@@ -57,8 +57,8 @@ public class GraphFactoryImpl extends EFactoryImpl implements GraphFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case GraphPackage.GRAPH: return createGraph();
-			case GraphPackage.NODE: return createNode();
 			case GraphPackage.GRAPH_ROOT: return createGraphRoot();
+			case GraphPackage.NODE: return createNode();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}

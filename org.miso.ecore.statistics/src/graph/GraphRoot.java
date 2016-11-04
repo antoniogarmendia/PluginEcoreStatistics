@@ -19,7 +19,7 @@ package graph;
  * @model
  * @generated
  */
-public interface GraphRoot extends Node {
+public interface GraphRoot extends AbstractNode {
 	/**
 	 * Returns the value of the '<em><b>Height</b></em>' attribute.
 	 * <!-- begin-user-doc -->

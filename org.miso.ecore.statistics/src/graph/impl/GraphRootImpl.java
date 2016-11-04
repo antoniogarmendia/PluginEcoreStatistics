@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class GraphRootImpl extends NodeImpl implements GraphRoot {
+public class GraphRootImpl extends AbstractNodeImpl implements GraphRoot {
 	/**
 	 * The default value of the '{@link #getHeight() <em>Height</em>}' attribute.
 	 * <!-- begin-user-doc -->
