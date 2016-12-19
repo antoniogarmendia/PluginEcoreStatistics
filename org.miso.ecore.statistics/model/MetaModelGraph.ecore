@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="MetaModelGraph" nsURI="http://miso.org/MetaModelGraph/1.0" nsPrefix="MetaModelGraph">
+  <eClassifiers xsi:type="ecore:EClass" name="Graph">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subgraph" upperBound="-1"
+        eType="#//SubGraph" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eClassList" upperBound="-1"
+        eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eClassAbstract" upperBound="-1"
+        eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EClass"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountEClasses" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"
+        derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountAbstractEClasses"
+        eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"
+        derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountConcreteEClass" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"
+        derived="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SubGraph">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"
+        eType="#//Node" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relations" upperBound="-1"
+        eType="#//Relation" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="height" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountOfConcreteEClass"
+        eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eClassesListOut" upperBound="-1"
+        eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EClass"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountEClassesOut" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="root" eType="#//Node"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountOfAbstractEClass"
+        eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountOfParentEClass" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountOfParentAbstractEClass"
+        eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountPackages" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountUnits" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountRecursionUnits" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amountOfRecursionPackages"
+        eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Node">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="compositions" upperBound="-1"
+        eType="#//Composition"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="references" upperBound="-1"
+        eType="#//Reference"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subClasses" upperBound="-1"
+        eType="#//SubClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eClass" eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relations" upperBound="-1"
+        eType="#//Relation" eOpposite="#//Relation/target"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="enumModularNotation" upperBound="-1"
+        eType="#//EnumModular"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="listNodes" upperBound="-1"
+        eType="#//Node"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="directSubclasses" upperBound="-1"
+        eType="#//SubClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="directComposition" upperBound="-1"
+        eType="#//Composition" eOpposite="#//Composition/parentNode"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="insideRecursion" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Relation" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Node"
+        eOpposite="#//Node/relations"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Composition" eSuperTypes="#//Relation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eReference" eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EReference"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parentNode" eType="#//Node"
+        eOpposite="#//Node/directComposition"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Reference" eSuperTypes="#//Relation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eReference" eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EReference"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SubClass" eSuperTypes="#//Relation"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="EnumModular">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="pattern" value=""/>
+    </eAnnotations>
+    <eLiterals name="Default"/>
+    <eLiterals name="Project" value="1"/>
+    <eLiterals name="Package" value="2"/>
+    <eLiterals name="Unit" value="3"/>
+    <eLiterals name="InsideUnit" value="4"/>
+    <eLiterals name="InsidePackage" value="5"/>
+    <eLiterals name="InsideProject" value="6"/>
+    <eLiterals name="AbstractPackageUnit" value="7"/>
+    <eLiterals name="AbstractPackage" value="8"/>
+    <eLiterals name="AbstractUnit" value="9"/>
+    <eLiterals name="RecursionPackage" value="10"/>
+    <eLiterals name="RecursionAbstractPackage" value="11"/>
+    <eLiterals name="RecursionUnit" value="12"/>
+    <eLiterals name="RecursionAbstractUnit" value="13"/>
+  </eClassifiers>
+</ecore:EPackage>

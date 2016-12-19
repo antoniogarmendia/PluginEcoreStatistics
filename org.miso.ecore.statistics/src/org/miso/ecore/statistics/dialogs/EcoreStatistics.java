@@ -18,6 +18,7 @@ public class EcoreStatistics {
 	private ResourceSet resourceSetEcore;
 	private Resource resEcore;
 	public EList<EClass> listEClasses;
+	public boolean error;
 	
 	
 	public EcoreStatistics(URI ecoreURI) {
@@ -25,9 +26,14 @@ public class EcoreStatistics {
 		this.ecoreURI = ecoreURI;
 		this.resEcore = null;
 		this.resourceSetEcore = new ResourceSetImpl();
-		this.listEClasses = null;		
+		this.listEClasses = null;	
+		this.error = false;
 	}
 	
+	public boolean isError() {
+		return error;
+	}
+
 	public Resource getResource()
 	{
 		if(this.resEcore==null){
@@ -40,6 +46,7 @@ public class EcoreStatistics {
 			}
 			catch(Exception e)
 			{
+				this.error = true;
 				e.printStackTrace();
 			}
 		}

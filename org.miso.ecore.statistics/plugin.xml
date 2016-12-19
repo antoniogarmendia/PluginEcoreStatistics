@@ -61,12 +61,13 @@
    </extension>
 
 
+
    <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated Graph -->
+      <!-- @generated MetaModelGraph -->
       <package
-            uri="http://miso.org/tree/representation/1.0"
-            class="graph.GraphPackage"
-            genModel="model/Graph.genmodel"/>
+            uri="http://miso.org/MetaModelGraph/1.0"
+            class="MetaModelGraph.MetaModelGraphPackage"
+            genModel="model/MetaModelGraph.genmodel"/>
    </extension>
 
 </plugin>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.miso.ecore.statistics/src" modelPluginID="org.miso.ecore.statistics"
+    modelName="MetaModelGraph" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
+    usedGenPackages="../../org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore" operationReflection="true"
+    importOrganizing="true">
+  <foreignModel>MetaModelGraph.ecore</foreignModel>
+  <genPackages prefix="MetaModelGraph" disposableProviderFactory="true" ecorePackage="MetaModelGraph.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="MetaModelGraph.ecore#//EnumModular">
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/Default"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/Project"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/Package"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/Unit"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/InsideUnit"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/InsidePackage"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/InsideProject"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/AbstractPackageUnit"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/AbstractPackage"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/AbstractUnit"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/RecursionPackage"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/RecursionAbstractPackage"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/RecursionUnit"/>
+      <genEnumLiterals ecoreEnumLiteral="MetaModelGraph.ecore#//EnumModular/RecursionAbstractUnit"/>
+    </genEnums>
+    <genClasses ecoreClass="MetaModelGraph.ecore#//Graph">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Graph/subgraph"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Graph/eClassList"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Graph/eClassAbstract"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//Graph/amountEClasses"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//Graph/amountAbstractEClasses"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//Graph/amountConcreteEClass"/>
+    </genClasses>
+    <genClasses ecoreClass="MetaModelGraph.ecore#//SubGraph">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//SubGraph/nodes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//SubGraph/relations"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//SubGraph/height"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//SubGraph/amountOfConcreteEClass"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//SubGraph/eClassesListOut"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//SubGraph/amountEClassesOut"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//SubGraph/root"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//SubGraph/amountOfAbstractEClass"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//SubGraph/amountOfParentEClass"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//SubGraph/amountOfParentAbstractEClass"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//SubGraph/amountPackages"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//SubGraph/amountUnits"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//SubGraph/amountRecursionUnits"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//SubGraph/amountOfRecursionPackages"/>
+    </genClasses>
+    <genClasses ecoreClass="MetaModelGraph.ecore#//Node">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/compositions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/references"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/subClasses"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/eClass"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/relations"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//Node/enumModularNotation"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/listNodes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/directSubclasses"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/directComposition"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//Node/insideRecursion"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="MetaModelGraph.ecore#//Relation">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Relation/target"/>
+    </genClasses>
+    <genClasses ecoreClass="MetaModelGraph.ecore#//Composition">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Composition/eReference"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Composition/parentNode"/>
+    </genClasses>
+    <genClasses ecoreClass="MetaModelGraph.ecore#//Reference">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Reference/eReference"/>
+    </genClasses>
+    <genClasses ecoreClass="MetaModelGraph.ecore#//SubClass"/>
+  </genPackages>
+</genmodel:GenModel>

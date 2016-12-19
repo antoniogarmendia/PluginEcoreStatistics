@@ -1,11 +1,12 @@
 package org.miso.ecore.statistics.dialogs;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -22,6 +23,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIConverter;
+import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.IShellProvider;
@@ -39,15 +42,21 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.miso.ecore.statistics.utils.CSVUtils;
 
-import dslHeuristicVisualization.ConcreteStrategyContainmentDiagramElement;
+import MetaModelGraph.Composition;
+import MetaModelGraph.EnumModular;
+import MetaModelGraph.Graph;
+import MetaModelGraph.Node;
+import MetaModelGraph.Reference;
+import MetaModelGraph.Relation;
+import MetaModelGraph.SubClass;
+import MetaModelGraph.SubGraph;
+import MetaModelGraph.impl.MetaModelGraphFactoryImpl;
+import dslHeuristicVisualization.ConcreteStrategyMaxContainment;
+import dslHeuristicVisualization.ConcreteStrategyNoParent;
 import dslHeuristicVisualization.DslHeuristicVisualizationFactory;
 import dslHeuristicVisualization.EcoreMatrixContainment;
-import graph.Graph;
-import graph.GraphElement;
-import graph.GraphRoot;
-import graph.Node;
-import graph.impl.GraphFactoryImpl;
 
 
 public class EcoreStatisticsDialog extends Dialog{
@@ -60,6 +69,7 @@ public class EcoreStatisticsDialog extends Dialog{
 	//Label 
 	private Label lb_NameEcore;
 	private Label lb_amountClasses;
+	private Label lbAmountAbstract;
 	private Label lb_amountContainment;
 	private Label lb_amountNoNContainment;
 		
@@ -70,16 +80,19 @@ public class EcoreStatisticsDialog extends Dialog{
 	private Label lb_amountNONContainmentMM;
 	public List listWOContainmentReferences;
 	
+	private final EList<Node> listVisitedNodes = new BasicEList<Node>();
+	
 	public EcoreStatisticsDialog(IShellProvider parentShell) {
+		
 		super(parentShell);
 		this.address = null;
 		this.nemf = null;
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		// TODO Auto-generated method stub
+		
 		Composite container = (Composite) super.createDialogArea(parent);
 		GridLayout layout_container = new GridLayout();
 		layout_container.numColumns = 3;
@@ -161,9 +174,15 @@ public class EcoreStatisticsDialog extends Dialog{
 		Label lb_title_amountClasses = new Label(containerStats, SWT.NONE);
 		lb_title_amountClasses.setText("Amount of EClasses: ");
 		
-		//Amount of Containment References
 		lb_amountClasses = new Label(containerStats, SWT.NONE);
 		lb_amountClasses.setText("Not Found");
+		
+		//Amount of Abstract Classes
+		Label lbTitleAmountAbstract = new Label(containerStats, SWT.NONE);
+		lbTitleAmountAbstract.setText("Amount of Abstract Classes");
+		
+		lbAmountAbstract = new Label(containerStats, SWT.NONE);
+		lbAmountAbstract.setText("Not Found");
 		
 		//Amount of Containment References
 		Label lb_title_amountContainment = new Label(containerStats, SWT.NONE);
@@ -232,21 +251,22 @@ public class EcoreStatisticsDialog extends Dialog{
 		new Label(containerStatistics, SWT.NONE);
 		
 		Button btnGenContainmentTree = new Button(containerStatistics, SWT.NONE);
-		btnGenContainmentTree.setText("Generate Visualization");
+		btnGenContainmentTree.setText("Generate Tree");
 		
 		btnGenContainmentTree.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				
-				GenerateVisualization(nemf);
+				if(nemf.isError()==false && nemf.getList_classes()!=null)
+					GenerateVisualization(nemf);
 			}		
 			
 		});
 		
 				
 		Button btnGenAllContainmentTree = new Button(containerStatistics, SWT.NONE);
-		btnGenAllContainmentTree.setText("Generate All Visualizations");
+		btnGenAllContainmentTree.setText("Generate All Tree");
 		
 		btnGenAllContainmentTree.addSelectionListener(new SelectionAdapter() {
 
@@ -259,7 +279,67 @@ public class EcoreStatisticsDialog extends Dialog{
 				for (String string : listItems) {
 					String path = "platform:/resource" + address.getText() + "/" + string;
 					EcoreStatistics ecoreStats = new EcoreStatistics(URI.createURI(path, false));
-					GenerateVisualization(ecoreStats);
+					if(ecoreStats.isError()==false && ecoreStats.getList_classes()!=null)
+						GenerateVisualization(ecoreStats);
+				}				
+			}		
+			
+		});
+		
+		Button btnCreateCSV = new Button(containerStatistics, SWT.NONE);
+		btnCreateCSV.setText("Create CSV");
+		
+		btnCreateCSV.addSelectionListener(new SelectionAdapter() {
+			
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			
+				String[] listItems = list.getItems();
+				String csvFile = "StatistiscEcoreZooModularPattern.csv";
+				String csvNoContainment = "StatistiscNoContainment.csv";
+				
+				try {
+					
+					String csvPath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + address.getText() + "/" + csvFile;
+					String csvPathNoContainment = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + address.getText() + "/" + csvNoContainment;
+					FileWriter writer = new FileWriter(csvPath);
+					CSVUtils.writeLine(writer, Arrays.asList("Meta-model Name","Amount of Roots","Name of the Roots","Selected Root",
+															  "Recursive Project","Height",
+															  "Amount of Packages", "Amount of Recursive Packages",
+															  "Amount of Units", "Amount of Recursive Units", "Unit Statistics",															  
+															  "Amount of EClasses", "Amount of EClass Out"));
+					
+					FileWriter writerNoContainments = new FileWriter(csvPathNoContainment);
+					CSVUtils.writeLine(writerNoContainments, Arrays.asList("Meta-model Name"));
+					
+					for (String mm : listWOContainmentReferences.getItems()) {
+						
+						CSVUtils.writeLine(writerNoContainments, Arrays.asList(mm));
+					}
+					
+					writerNoContainments.flush();
+					writerNoContainments.close();
+				     
+					for (String mm : listItems) {
+						String path = address.getText() + "/" + mm;
+						URI fileURI = URI.createPlatformResourceURI(path,true);
+						ResourceSet reset = new ResourceSetImpl();	
+						URIConverter converter = new ExtensibleURIConverterImpl();
+						boolean exist = converter.exists(fileURI.trimFileExtension().appendFileExtension("mmgraph"), null);
+						if(exist==true){
+							Resource res = reset.getResource(fileURI.trimFileExtension().appendFileExtension("mmgraph"),true);						
+							AddToCSVFile(res,writer);
+						}
+						else
+							CSVUtils.writeLine(writer, Arrays.asList(fileURI.lastSegment(),String.valueOf("-1")));
+					}
+					 writer.flush();
+				     writer.close();					
+					
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}				
 			}		
 			
@@ -267,6 +347,180 @@ public class EcoreStatisticsDialog extends Dialog{
 		
 		return container;
 	}
+	
+	private void AddToCSVFile(Resource res, FileWriter writer) throws IOException {
+		
+		
+		EObject rootEObject = res.getContents().get(0);
+		
+		if(rootEObject instanceof Graph)
+		{
+			Graph graph = (Graph)rootEObject;
+			int amountOfSubGraph = graph.getSubgraph().size();
+			Iterator<SubGraph> itSubGraphs = graph.getSubgraph().iterator();
+			int eClassesOut = 500000;
+			SubGraph subGraph = null;
+			String nameOfRoots = "";
+			String selectedRoot = "";
+			while (itSubGraphs.hasNext()) {
+				SubGraph currentSubGraph = (SubGraph) itSubGraphs.next();
+				if(eClassesOut>currentSubGraph.getAmountEClassesOut()){
+					eClassesOut = currentSubGraph.getAmountEClassesOut();
+					subGraph = currentSubGraph;	
+					selectedRoot = currentSubGraph.getRoot().getEClass().getName();
+				}	
+				if(nameOfRoots.equals(""))
+					nameOfRoots = currentSubGraph.getRoot().getEClass().getName();
+				else
+					nameOfRoots = nameOfRoots + "|" + currentSubGraph.getRoot().getEClass().getName();
+			}
+			
+			String unitsStatistics = amountPackagesUnits(subGraph);
+				
+			boolean recursiveProject = false;
+			if(subGraph.getRoot().getEnumModularNotation().indexOf(EnumModular.RECURSION_PACKAGE)!=-1)
+				recursiveProject = true; 
+			
+			CSVUtils.writeLine(writer, Arrays.asList(res.getURI().lastSegment(),
+												String.valueOf(amountOfSubGraph),
+												nameOfRoots,
+												selectedRoot,
+												String.valueOf(recursiveProject),
+												String.valueOf(subGraph.getHeight()),
+												String.valueOf(subGraph.getAmountPackages()),
+												String.valueOf(subGraph.getAmountOfRecursionPackages()),
+												String.valueOf(subGraph.getAmountUnits()),
+												String.valueOf(subGraph.getAmountRecursionUnits()),
+												unitsStatistics,
+												String.valueOf(graph.getAmountEClasses()),
+												String.valueOf(subGraph.getAmountEClassesOut())
+												)
+							  );
+																						
+		}	
+	}
+
+	private String amountPackagesUnits(SubGraph subGraph) {
+		
+		Iterator<Node> itNodes = subGraph.getNodes().iterator();
+		int amountPackages = 0;
+		int amountUnits = 0;
+		int amountRecursionUnits = 0;
+		int amountRecursionPackages = 0;
+		String unitsStatistics = "";
+		while (itNodes.hasNext()) {
+			Node node = (Node) itNodes.next();
+			if(node.getEnumModularNotation().indexOf(EnumModular.PACKAGE)!=-1)
+				amountPackages = amountPackages + 1;
+			else if(node.getEnumModularNotation().indexOf(EnumModular.RECURSION_PACKAGE)!=-1)
+				amountRecursionPackages = amountRecursionPackages + 1;
+			if(node.getEnumModularNotation().indexOf(EnumModular.RECURSION_UNIT)!=-1)
+			{
+				//Determine concrete nodes
+				//EList<Node> nodes =
+				getInsideNodes(node);
+				//node.getListNodes().addAll(nodes);
+				amountRecursionUnits = amountRecursionUnits + 1;
+				unitsStatistics = unitStatistics(unitsStatistics,node);			
+			}
+			else if(node.getEnumModularNotation().indexOf(EnumModular.UNIT)!=-1)
+			{
+				//Determine concrete nodes
+				//EList<Node> nodes = 
+				getInsideNodes(node);
+				//node.getListNodes().addAll(nodes);
+				//Recursion inside the unit
+				amountUnits = amountUnits + 1;
+				unitsStatistics = unitStatistics(unitsStatistics,node);			
+			}
+			
+		}
+		
+		subGraph.setAmountPackages(amountPackages);
+		subGraph.setAmountUnits(amountUnits);
+		subGraph.setAmountRecursionUnits(amountRecursionUnits);
+		subGraph.setAmountOfRecursionPackages(amountRecursionPackages);
+		
+		return unitsStatistics;
+	}
+
+	private String unitStatistics(String unitsStatistics, Node node) {
+		
+		if(!unitsStatistics.equals(""))
+			unitsStatistics = unitsStatistics + "|";
+		unitsStatistics = unitsStatistics + "Unit Name: " + node.getEClass().getName() + "&" +	
+											"Size of EClasses Inside Unit: " + node.getListNodes().size() 
+											;
+		if(node.getEnumModularNotation().indexOf(EnumModular.RECURSION_UNIT)!=-1){
+			unitsStatistics = unitsStatistics + "&RecursiveUnit: true";  
+		}else{
+			unitsStatistics = unitsStatistics + "&RecursiveUnit: false";
+			//Recursive Inside Unit
+			Iterator<Node> itNodes = node.getListNodes().iterator();
+			boolean recursiveInsideUnit = false;
+			while (itNodes.hasNext()) {
+				Node node2 = (Node) itNodes.next();
+				recursiveInsideUnit = detectRecursion(node2);
+				if(recursiveInsideUnit == true)
+					break;
+			}
+			if(recursiveInsideUnit==true)
+				unitsStatistics = unitsStatistics + "&RecursiveInsideUnit: true";
+			else
+				unitsStatistics = unitsStatistics + "&RecursiveInsideUnit: false";
+		}	
+		
+		return unitsStatistics;
+	}
+
+	private void getInsideNodes(Node node) {
+		
+		Iterator<Composition> itCompositions = node.getCompositions().iterator();
+		listVisitedNodes.clear(); 
+		while (itCompositions.hasNext()) {
+			Composition composition = (Composition) itCompositions.next();
+			Node target = composition.getTarget();
+			if(target.getEClass().isAbstract()==false)
+				node.getListNodes().add(target);
+			System.out.println("Init");
+			node.getListNodes().addAll(getListOfInsideNodes(target));
+		}		
+	}
+		
+	public EList<Node> getListOfInsideNodes(Node node){
+		
+		EList<Node> listOfInsideNodes = new BasicEList<Node>();
+		EList<Node> listNodes = new BasicEList<Node>();
+		listNodes.add(node);
+		
+		for (int i = 0; i < listNodes.size(); i++) {
+			
+			Node currentNode = listNodes.get(i);
+			Iterator<Composition> itCompositions = getAllCompositions(currentNode).iterator();
+			while (itCompositions.hasNext()) {
+				Composition composition = (Composition) itCompositions.next();
+				Node compositionNode = composition.getTarget();	
+				if(listNodes.indexOf(compositionNode)==-1 && compositionNode.getEClass().isAbstract() == false)
+					listNodes.add(compositionNode);
+				if(listOfInsideNodes.indexOf(compositionNode)==-1)
+					listOfInsideNodes.add(compositionNode);
+			}
+			
+			Iterator<SubClass> itSubClasses = currentNode.getSubClasses().iterator();
+			while (itSubClasses.hasNext()) {
+				
+				SubClass subClass = (SubClass) itSubClasses.next();
+				Node subClassNode = subClass.getTarget();
+				if(listNodes.indexOf(subClassNode)==-1 && subClassNode.getEClass().isAbstract() == false)
+					listNodes.add(subClassNode);
+				if(listOfInsideNodes.indexOf(subClassNode)==-1)
+					listOfInsideNodes.add(subClassNode);				
+			}
+			
+		}
+		
+		return listOfInsideNodes;
+	}	
 
 	@Override
 	protected void configureShell(Shell newShell) {
@@ -318,7 +572,7 @@ public class EcoreStatisticsDialog extends Dialog{
 					if(ecore.getList_classes()!=null)
 					{
 						amountEClass = amountEClass + ecore.getList_classes().size();
-						int amountOfContainment = AmountContainment(ecore.getList_classes());
+						int amountOfContainment = amountContainment(ecore.getList_classes());
 						if(amountOfContainment == 0)
 						{
 							this.listWOContainmentReferences.add(res.getName());	
@@ -346,7 +600,7 @@ public class EcoreStatisticsDialog extends Dialog{
 	}
 
 	private boolean isEcore(IResource res) {
-		// TODO Auto-generated method stub
+		
 		if(res instanceof IFile)
 		{
 			if(res.getFileExtension().equals("ecore"))
@@ -364,36 +618,57 @@ public class EcoreStatisticsDialog extends Dialog{
 		{	
 			lb_NameEcore.setText(nemf.getResource().getURI().lastSegment());
 			lb_amountClasses.setText(Integer.toString(nemf.getList_classes().size()));
-			lb_amountContainment.setText(Integer.toString(AmountContainment(nemf.getList_classes())));
-			lb_amountNoNContainment.setText(Integer.toString(AmountNonContainment(nemf.getList_classes())));
+			lbAmountAbstract.setText(Integer.toString(amountAbstractClasses(nemf.getList_classes())));
+			lb_amountContainment.setText(Integer.toString(amountContainment(nemf.getList_classes())));
+			lb_amountNoNContainment.setText(Integer.toString(amountNonContainment(nemf.getList_classes())));
 		}
 		else
 		{
 			lb_NameEcore.setText(nemf.getResource().getURI().lastSegment());
 			lb_amountClasses.setText("Not Found, try to open with the Ecore Editor");
+			lbAmountAbstract.setText("Not Found");
 			lb_amountContainment.setText("Not Found");
 			lb_amountNoNContainment.setText("Not Found");
 		}
 	}
 	
-	private int AmountContainment(EList<EClass> listEClass)
+	private int amountAbstractClasses(EList<EClass> listEClass)
+	{
+		Iterator<EClass> itClasses = listEClass.iterator();
+		int count = 0;
+		while (itClasses.hasNext()) {
+			EClass eClass = (EClass) itClasses.next();
+			if(eClass.isAbstract())
+				count = count + 1;
+		}
+		return count;
+	}
+	
+	private int amountContainment(EList<EClass> listEClass)
 	{
 		Iterator<EClass> itEClass = listEClass.iterator();
 		int amount = 0;
 		while (itEClass.hasNext()) {
 			EClass eClass = (EClass) itEClass.next();
-			amount = amount + eClass.getEAllContainments().size();
+			Iterator<EReference> itEReferences = eClass.getEReferences().iterator();
+			while (itEReferences.hasNext()) {
+				EReference eReference = (EReference) itEReferences.next();
+				if(eReference.isContainment() == true){
+					System.out.println("amountContainment : " + eClass.getName() + "|" + eReference.getName());
+					amount = amount + 1;
+				}
+			}			
 		}
 		return amount;
 	}
 	
-	private int AmountNonContainment(EList<EClass> listEClass)
+	private int amountNonContainment(EList<EClass> listEClass)
 	{
 		Iterator<EClass> itEClass = listEClass.iterator();
 		int amount = 0;
 		while (itEClass.hasNext()) {
 			EClass eClass = (EClass) itEClass.next();
-			Iterator<EReference> references =  eClass.getEAllReferences().iterator();
+			Iterator<EReference> references =  eClass.getEReferences().iterator();
 			while (references.hasNext()) {
 				EReference eReference = (EReference) references.next();
 				if(eReference.isContainment() == false)
@@ -405,64 +680,117 @@ public class EcoreStatisticsDialog extends Dialog{
 	
 	public void GenerateVisualization(EcoreStatistics ecoreStats)
 	{
-		//Generate Tree of Containments
+		
 		if(ecoreStats!=null)
 		{
 			EcoreMatrixContainment ecoreContainment = DslHeuristicVisualizationFactory.eINSTANCE.createEcoreMatrixContainment();
+			ConcreteStrategyMaxContainment getRoot = DslHeuristicVisualizationFactory.eINSTANCE.createConcreteStrategyMaxContainment();
+			
 			ecoreContainment.GetDirectMatrixContainment(ecoreStats.getList_classes());
 			ecoreContainment.GetPathMatrix();
 			
-			ConcreteStrategyContainmentDiagramElement elements =  DslHeuristicVisualizationFactory.eINSTANCE.createConcreteStrategyContainmentDiagramElement();
+			ConcreteStrategyNoParent rootStrategyNoParent = DslHeuristicVisualizationFactory.eINSTANCE.createConcreteStrategyNoParent();
 						
-			Graph graph = GraphFactoryImpl.eINSTANCE.createGraph();
-			Iterator<EClass> itListAllClasses = ecoreStats.getList_classes().iterator();
-			Map<EClass,GraphElement> mapElements = new HashMap<EClass,GraphElement>();
-			while (itListAllClasses.hasNext()) {
-				EClass eClass = (EClass) itListAllClasses.next();
-				GraphRoot element = GraphFactoryImpl.eINSTANCE.createGraphRoot();
-				element.setEClass(eClass);
-				graph.getElements().add(element);		
+			EList<EClass> listNoParentClasses = rootStrategyNoParent.List_Root(ecoreContainment.getPathMatrix(), ecoreStats.getList_classes());
+			
+			//if(listNoParentClasses.size() == 0){
 				
+				Iterator<EClass> itRoots = getRoot.List_Root(ecoreContainment.getPathMatrix(), ecoreStats.getList_classes()).iterator();
+				while (itRoots.hasNext()) {
+					EClass eClass = (EClass) itRoots.next();
+					if(eClass.isAbstract() == false){
+						int pos = listNoParentClasses.indexOf(eClass);
+						if(pos==-1)
+							listNoParentClasses.add(eClass);
+						
+						break;							
+					}
+				}				
+			//}	
+				
+			Iterator<EClass> itListNoParentClasses = listNoParentClasses.iterator();	
+			
+			Graph graph = MetaModelGraphFactoryImpl.eINSTANCE.createGraph();
+			
+			Map<EClass, Node> mapElements = new ConcurrentHashMap<EClass, Node>();
+			
+			graph.getEClassList().addAll(ecoreStats.getList_classes());
+			graph.getEClassAbstract().addAll(getAbstractEClasses(ecoreStats.getList_classes()));
+						
+			while (itListNoParentClasses.hasNext()) {
+				
+				EClass eClassRoot = (EClass) itListNoParentClasses.next();
+				SubGraph subGraph = MetaModelGraphFactoryImpl.eINSTANCE.createSubGraph();
+				Node rootNode = MetaModelGraphFactoryImpl.eINSTANCE.createNode();
+				rootNode.setEClass(eClassRoot);
+				subGraph.getNodes().add(rootNode);
+				subGraph.setRoot(rootNode);
 				mapElements.clear();
-				mapElements.put(eClass, element);
-				ArrayList<GraphElement> arrayList = new ArrayList<GraphElement>(Arrays.asList(element));
+				mapElements.put(eClassRoot, rootNode);				
+								
+				ArrayList<EClass> arrayEAllClasses = new ArrayList<EClass>(Arrays.asList(eClassRoot));
 				
-				for (int i = 0; i < arrayList.size(); i++) {
-					Node treeElement = (Node) arrayList.get(i);
-					EClass currentEClass = treeElement.getEClass();
-					EList<EClass> possible = elements.PossibleElements(currentEClass, ecoreContainment.getDirect_MatrixContainment(), ecoreStats.getList_classes());
-					Iterator<EClass> itpossible = possible.iterator();					
-					while (itpossible.hasNext()) {
+				for (int i = 0; i < arrayEAllClasses.size(); i++) {
+					
+					EClass eClass = arrayEAllClasses.get(i);					
+					//Iterator<EReference> itEAllReferences = eClass.getEAllReferences().iterator();
+					Iterator<EReference> itEAllReferences = eClass.getEAllContainments().iterator();
+					EList<EReference> listEReferences = eClass.getEReferences();
+					
+					Node sourceNode = mapElements.get(eClass);
+					
+					while (itEAllReferences.hasNext()) {
 						
-						EClass eClassP = (EClass) itpossible.next();
-						GraphElement mapElement = mapElements.get(eClassP);
-						if(mapElement == null)
-						{
-							Node node = GraphFactoryImpl.eINSTANCE.createNode();
-							node.setEClass(eClassP);
-							treeElement.getChildrenContainments().add(node);
-							mapElements.put(eClassP,node);
-							ContainmentReferences(treeElement, node);
-							arrayList.add(node);
-						}
-						else
-						{
-							treeElement.getChildrenReferences().add(mapElement);
-						}
-					}
-					if(itpossible.hasNext() == false)
-					{
-						int height = CalculatedTreeHeight(treeElement);
-						int currentHeight = element.getHeight();
-						if(height>currentHeight)
-							element.setHeight(height);
-					}
-				}
-				element.setAmountOfNodes(arrayList.size());
-			}
+						EReference eReference = (EReference) itEAllReferences.next();
+						EClassifier eClassifier = eReference.getEType();
 						
+						if(eClassifier instanceof EClass){
+							
+							EClass eClassType = (EClass) eClassifier;
+							//Search in the Map of Elements
+							Node node = mapElements.get(eClassType);
+							if(node == null){
+								
+								node = MetaModelGraphFactoryImpl.eINSTANCE.createNode();
+								node.setEClass(eClassType);
+								subGraph.getNodes().add(node);
+								mapElements.put(eClassType, node);
+								arrayEAllClasses.add(eClassType);
+								//SubClasses
+								SubClasses(node,subGraph,arrayEAllClasses,mapElements,ecoreStats.getList_classes());
+							}					
+							
+							Relation eRelation = null;
+							if(eReference.isContainment()){
+							
+								eRelation = MetaModelGraphFactoryImpl.eINSTANCE.createComposition();
+								((Composition)eRelation).setEReference(eReference);	
+								eRelation.setTarget(node);
+								sourceNode.getCompositions().add((Composition) eRelation);
+								if(listEReferences.indexOf(eReference)!=-1)
+									sourceNode.getDirectComposition().add((Composition) eRelation);
+								
+							}else{
+								
+								eRelation = MetaModelGraphFactoryImpl.eINSTANCE.createReference();
+								((Reference)eRelation).setEReference(eReference);
+								eRelation.setTarget(node);
+								sourceNode.getReferences().add((Reference) eRelation);
+							}
+							
+							subGraph.getRelations().add(eRelation);						
+						}						
+					}					
+				}			
+				
+				calculateAmountOfConcreteClasses(subGraph,ecoreStats.listEClasses,mapElements);
+				annotateProjectPackageAndUnits(subGraph);
+				calculateMaxHeight(subGraph);
+				graph.getSubgraph().add(subGraph);
+			}		
+			
 			ResourceSet reset = new ResourceSetImpl();					
-			Resource res = reset.createResource(ecoreStats.getEcoreURI().trimFileExtension().appendFileExtension("tree"));
+			Resource res = reset.createResource(ecoreStats.getEcoreURI().trimFileExtension().appendFileExtension("mmgraph"));
 			res.getContents().add(graph);
 			
 			try {
@@ -470,53 +798,391 @@ public class EcoreStatisticsDialog extends Dialog{
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}		
-								
+			}	
 		}			
-		System.out.println("Generate Visualization");
+		System.out.println("Generate Visualization: " +  ecoreStats.getEcoreURI().lastSegment());
 	}
 
-	private int CalculatedTreeHeight(Node treeElement) {
-
-		int height = 0;
-		EObject eObject = treeElement;
-		while (eObject!=null) {
-			
-			if(eObject instanceof GraphRoot)
-				return height;
-			else
-			{
-				height = height + 1;
-				eObject = eObject.eContainer();
-			}			
+	private void calculateMaxHeight(SubGraph subGraph) {
+		
+		Node rootNode = subGraph.getRoot();
+		Iterator<Composition> itCompositions = rootNode.getCompositions().iterator();
+		int maxHeight = 0;
+		while (itCompositions.hasNext()) {
+			Composition composition = (Composition) itCompositions.next();
+			int height = calculateHeight(composition, new BasicEList<Node>());
+			if(height>maxHeight)
+				maxHeight = height;
 		}
-		return height;
+		subGraph.setHeight(maxHeight);
+		
 	}
 	
-	private void ContainmentReferences(Node from, Node to)
-	{
-		EClass toEClass = to.getEClass();
-		EList<EClass> listSuperTypes = new BasicEList<EClass>();
-		listSuperTypes.add(toEClass);
-		listSuperTypes.addAll(toEClass.getEAllSuperTypes());		
-		Iterator<EReference> itContainments = from.getEClass().getEAllContainments().iterator();
+	private int calculateHeight(Composition composition, EList<Node> visitedNodes){
 		
-		while (itContainments.hasNext()) {
-			
-			EReference eReference = (EReference) itContainments.next();
-			EClassifier eClassifier = eReference.getEType();
-			if(eClassifier instanceof EClass)
-			{
-				EClass eClass = (EClass) eClassifier;
-				int indexEClass = listSuperTypes.indexOf(eClass);
-				if(indexEClass!=-1)
-				{
-					to.getContainmentReferences().add(eReference);
+		Iterator<Composition> itCompositions = getAllCompositions(composition.getTarget()).iterator();
+		int maxHeight = 0;
+		if(itCompositions.hasNext() == false)
+				return 1;
+			else{
+				int height = 0; 
+				while (itCompositions.hasNext()) {
+					Composition compo = (Composition) itCompositions.next();
+					Node node = compo.getTarget();
+					int indexOf = visitedNodes.indexOf(node);
+					if(indexOf==-1 && !composition.getTarget().equals(node)){
+						visitedNodes.add(node);
+						height = calculateHeight(compo, visitedNodes);
+						if(height > maxHeight)
+							maxHeight = height;
+					}						
 				}
+			}
+		
+		return maxHeight + 1;
+	}
+		
+	private EList<Composition> getDirectAllCompositions(Node node){
+		
+		EList<Composition> eListCompositions = new BasicEList<Composition>();
+		eListCompositions.addAll(node.getCompositions());	
+				
+		return eListCompositions;
+	}
+	
+	private EList<Composition> getAllCompositionSubClass(Node node){
+		
+		EList<Composition> eListCompositions = new BasicEList<Composition>();
+				
+		Iterator<SubClass> itAllSubClasses = node.getSubClasses().iterator();
+		while (itAllSubClasses.hasNext()) {
+			SubClass subClass = (SubClass) itAllSubClasses.next();
+			eListCompositions.addAll(subClass.getTarget().getCompositions());
+		}
+				
+		return eListCompositions;		
+	}
+	
+	private EList<Composition> getAllCompositions(Node node){
+		
+		EList<Composition> eListCompositions = new BasicEList<Composition>();
+		eListCompositions.addAll(getDirectAllCompositions(node));
+		eListCompositions.addAll(getAllCompositionSubClass(node));
+		
+		return eListCompositions;
+	}
+
+	private void calculateAmountOfConcreteClasses(SubGraph subGraph, EList<EClass> listEClasses, Map<EClass, Node> mapElements) {
+		
+		int amountOfConcreteClasses = 0;
+		int amountOfAbstractEClass = 0;
+		EList<EClass> listEClassOut = new BasicEList<EClass>();
+		Iterator<Node> itNodes = subGraph.getNodes().iterator();
+		while (itNodes.hasNext()) {
+			Node node = (Node) itNodes.next();
+			if(node.getEClass().isAbstract() == false)
+				amountOfConcreteClasses = amountOfConcreteClasses + 1;
+			else
+				amountOfAbstractEClass = amountOfAbstractEClass + 1;		
+		}
+		
+		int parentEClass = 0;
+		int parentAbstractEClass = 0;
+		
+		Iterator<EClass> itlistEClasses = listEClasses.iterator();
+		while (itlistEClasses.hasNext()) {
+			EClass eClass = (EClass) itlistEClasses.next();
+			Object element = mapElements.get(eClass);
+			if(/*eClass.isAbstract() == false &&*/ element==null){
+				
+				boolean isSuperType = false;
+				for (Map.Entry<EClass, Node> entry : mapElements.entrySet()) {
+					EClass eClassMap = (EClass) entry.getKey();
+					int pos = eClassMap.getEAllSuperTypes().indexOf(eClass);
+					if(pos!=-1){
+						isSuperType = true;
+						break;
+					}
+				}
+				if(isSuperType == false)		
+					listEClassOut.add(eClass);
+				else {
+					if(eClass.isAbstract() == true)
+						parentAbstractEClass = parentAbstractEClass + 1;
+					else
+						parentEClass = parentEClass + 1;
+				}
+			}
+		}
+		
+		subGraph.setAmountEClassesOut(listEClassOut.size());
+		subGraph.setAmountOfParentEClass(parentEClass);
+		subGraph.setAmountOfParentAbstractEClass(parentAbstractEClass);
+		subGraph.getEClassesListOut().addAll(listEClassOut);
+		subGraph.setAmountOfConcreteEClass(amountOfConcreteClasses);
+		subGraph.setAmountOfAbstractEClass(amountOfAbstractEClass);
+		
+	}
+
+	private EList<EClass> getAbstractEClasses(EList<EClass> list_classes) {
+		
+		EList<EClass> listAbstractEClasses = new BasicEList<EClass>();
+		Iterator<EClass> itAbstractEClasses = list_classes.iterator();
+		while (itAbstractEClasses.hasNext()) {
+			EClass eClass = (EClass) itAbstractEClasses.next();
+			if(eClass.isAbstract())
+				listAbstractEClasses.add(eClass);
+		}			
+		return listAbstractEClasses;		
+	}
+
+	private void SubClasses(Node node, SubGraph subGraph, ArrayList<EClass> arrayEAllClasses,
+			Map<EClass, Node> mapElements, EList<EClass> eClassesList) {
+		
+		Iterator<EClass> itListClasses = eClassesList.iterator();
+		EClass eClassP = node.getEClass();
+		while (itListClasses.hasNext()) {
+		
+			EClass eClass = (EClass) itListClasses.next();
+			EList<EClass> listSuper = eClass.getEAllSuperTypes();
+			EList<EClass> listDirectSuperClass = eClass.getESuperTypes();
+			int index = listSuper.indexOf(eClassP);
+			if(index != -1){
+				Node subClassNode = mapElements.get(eClass);
+				if(subClassNode == null){
+					subClassNode = MetaModelGraphFactoryImpl.eINSTANCE.createNode();
+					subClassNode.setEClass(eClass);
+					subGraph.getNodes().add(subClassNode);
+					mapElements.put(eClass, subClassNode);
+					arrayEAllClasses.add(eClass);
+				}
+				SubClass sub = MetaModelGraphFactoryImpl.eINSTANCE.createSubClass();
+				sub.setTarget(subClassNode);
+				subGraph.getRelations().add(sub);
+				node.getSubClasses().add(sub);		
+				if(listDirectSuperClass.indexOf(eClassP)!=-1)
+					node.getDirectSubclasses().add(sub);
+			}
+		}		
+		
+	}
+
+	private void annotateProjectPackageAndUnits(SubGraph subGraph) {
+		
+		//Project 
+		subGraph.getRoot().getEnumModularNotation().add(EnumModular.PROJECT);
+		
+		boolean existRecursion = detectRecursion(subGraph.getRoot());
+		if(existRecursion == true)
+			subGraph.getRoot().getEnumModularNotation().add(EnumModular.RECURSION_PACKAGE);
+		
+		EList<Node> eListAllNodes = new BasicEList<Node>();
+		eListAllNodes.add(subGraph.getRoot());
+		
+		for (int i = 0; i < eListAllNodes.size(); i++){
+			
+			Node sourceNode = eListAllNodes.get(i);
+			if(sourceNode.equals(subGraph.getRoot())){
+				
+				//Analyze Compositions
+				Iterator<Composition> itCompositions = sourceNode.getCompositions().iterator();
+				while (itCompositions.hasNext()) {
+					
+					Composition composition = (Composition) itCompositions.next();
+					Node currentNode = composition.getTarget();
+					existRecursion = detectRecursion(currentNode);
+					if(existRecursion==true){
+						if(currentNode.getEClass().isAbstract() == false)
+							currentNode.getEnumModularNotation().add(EnumModular.RECURSION_PACKAGE);
+						else 
+							currentNode.getEnumModularNotation().add(EnumModular.RECURSION_ABSTRACT_PACKAGE);
+						if(eListAllNodes.indexOf(currentNode)==-1)
+							eListAllNodes.add(currentNode);
+					}
+					else
+					{
+						boolean hasComp = hasCompositionLevel(currentNode,0);
+						if(hasComp==true){
+							if(currentNode.getEClass().isAbstract() == false)
+								currentNode.getEnumModularNotation().add(EnumModular.PACKAGE);
+							else 
+								currentNode.getEnumModularNotation().add(EnumModular.ABSTRACT_PACKAGE_UNIT);
+							if(eListAllNodes.indexOf(currentNode)==-1)
+								eListAllNodes.add(currentNode);
+						}
+						else
+							AnnotateUnit(currentNode);						
+					}
+				}
+				
+			}else{
+				
+				boolean hasCompo = hasCompositionLevel(sourceNode, 0);
+				if(hasCompo == true){
+					
+					//Analyze Compositions
+					Iterator<Composition> itCompositions = this.getAllCompositions(sourceNode).iterator();				
+					while (itCompositions.hasNext()) {
+						Composition composition = (Composition) itCompositions.next();
+						Node currentNode = composition.getTarget();
+						if(sourceNode.getEnumModularNotation().indexOf(EnumModular.RECURSION_PACKAGE)!=-1){
+							if(currentNode.getEClass().isAbstract() == false)
+								currentNode.getEnumModularNotation().add(EnumModular.UNIT);
+							else
+								AnnotateUnit(currentNode);
+						}
+						else{
+							existRecursion = detectRecursion(currentNode);
+							if (existRecursion==true) {							
+								if(currentNode.getEClass().isAbstract() == false)
+									currentNode.getEnumModularNotation().add(EnumModular.RECURSION_PACKAGE);
+								else 
+									currentNode.getEnumModularNotation().add(EnumModular.RECURSION_ABSTRACT_PACKAGE);
+							}
+							else{
+								boolean hasComp = hasCompositionLevel(currentNode,1);
+								if(hasComp==true){
+									if(currentNode.getEClass().isAbstract() == false)
+										currentNode.getEnumModularNotation().add(EnumModular.PACKAGE);
+									else 
+										currentNode.getEnumModularNotation().add(EnumModular.ABSTRACT_PACKAGE_UNIT);															
+								}
+								else
+									currentNode.getEnumModularNotation().add(EnumModular.UNIT);
+							}
+							if(eListAllNodes.indexOf(currentNode)==-1)
+								eListAllNodes.add(currentNode);
+						}
+					}
+					
+					Iterator<SubClass> itAllSubClasses = sourceNode.getSubClasses().iterator();
+					while (itAllSubClasses.hasNext()) {
+						SubClass subClass = (SubClass) itAllSubClasses.next();
+						//if(subClass.getTarget().getCompositions().size() == 0 && subClass.getTarget().getEClass().isAbstract() == false)
+						//	subClass.getTarget().getEnumModularNotation().add(EnumModular.UNIT);
+						//else{
+							if(eListAllNodes.indexOf(subClass.getTarget())==-1)
+								eListAllNodes.add(subClass.getTarget());
+						//}							
+					}
+					
+					existRecursion = detectRecursion(sourceNode);
+					if(existRecursion == true){
+						
+						if(sourceNode.getEClass().isAbstract() == true)
+							sourceNode.getEnumModularNotation().add(EnumModular.RECURSION_ABSTRACT_PACKAGE);
+						else
+							sourceNode.getEnumModularNotation().add(EnumModular.RECURSION_PACKAGE);
+						
+					}
+					else{
+						if(sourceNode.getEClass().isAbstract() == true)
+							sourceNode.getEnumModularNotation().add(EnumModular.ABSTRACT_PACKAGE_UNIT);
+						else
+							sourceNode.getEnumModularNotation().add(EnumModular.PACKAGE);
+					}
+				}
+				else{
+					
+					AnnotateUnit(sourceNode);
+				}				
+				
 			}
 		}		
 	}
+		
+	private boolean detectRecursion(Node node) {
+		
+		EList<Node> listOfNodes = new BasicEList<Node>();
+		listOfNodes.add(node);
+		for (int i = 0; i < listOfNodes.size(); i++) {
+
+			Node currentNode = listOfNodes.get(i);
+			Iterator<Composition> itCompositions =  getAllCompositions(currentNode).iterator();
+			while (itCompositions.hasNext()) {
+				Composition composition = (Composition) itCompositions.next();
+				Node target = composition.getTarget();
+				if(target.equals(node) ^ isSubEClass(target, node)==true)
+					return true;
+				else{
+					if(listOfNodes.indexOf(target)==-1)
+						listOfNodes.add(target);
+				}				
+			}			
+		}		
+		return false;
+	}
 	
+	private boolean isSubEClass(Node parent,Node children){
+		
+		Iterator<SubClass> itSubClasses = parent.getSubClasses().iterator();
+		while (itSubClasses.hasNext()) {
+			SubClass subClass = (SubClass) itSubClasses.next();
+			if(subClass.getTarget().equals(children))
+				return true;
+		}
+		return false;
+	}
+
+	private void AnnotateUnit(Node node){
+		
+		boolean existRecursion = detectRecursion(node);
+		if(existRecursion == false){
+			if(node.getEClass().isAbstract() == true)
+				node.getEnumModularNotation().add(EnumModular.ABSTRACT_UNIT);
+			else
+				node.getEnumModularNotation().add(EnumModular.UNIT);
+		}
+		else{
+			if(node.getEClass().isAbstract() == true)
+				node.getEnumModularNotation().add(EnumModular.RECURSION_ABSTRACT_UNIT);
+			else
+				node.getEnumModularNotation().add(EnumModular.RECURSION_UNIT);
+		}
+		Iterator<SubClass> itAllSubClasses = node.getSubClasses().iterator();
+		while (itAllSubClasses.hasNext()) {
+			SubClass subClass = (SubClass) itAllSubClasses.next();
+			existRecursion = detectRecursion(subClass.getTarget());
+			if(existRecursion==false)
+			{
+				if(subClass.getTarget().getEClass().isAbstract() == false)
+					subClass.getTarget().getEnumModularNotation().add(EnumModular.UNIT);
+				else
+					subClass.getTarget().getEnumModularNotation().add(EnumModular.ABSTRACT_UNIT);
+			}
+			else{
+				
+				if(subClass.getTarget().getEClass().isAbstract() == false)
+					subClass.getTarget().getEnumModularNotation().add(EnumModular.RECURSION_UNIT);
+				else
+					subClass.getTarget().getEnumModularNotation().add(EnumModular.RECURSION_ABSTRACT_UNIT);
+				
+			}				
+		}		
+	}
+	
+	/*
+	 * True has composition to unvisited node 
+	 * False has no composition
+	 * */
+	private boolean hasCompositionLevel(Node node,int level){
+	
+		Iterator<Composition> itCompositions = getAllCompositions(node).iterator();
+		if(itCompositions.hasNext() == false)
+			return false;
+		while (itCompositions.hasNext()) {
+			Composition composition = (Composition) itCompositions.next();
+			Node currentNode = composition.getTarget();			
+			if(currentNode.equals(node) == false){	
+			
+				if(currentNode.getEnumModularNotation().equals(EnumModular.DEFAULT) || level==1)
+					return true;			
+				else
+					return hasCompositionLevel(currentNode, 1);
+			}		
+		}		
+		return false;
+	}
 	
 	
 }
