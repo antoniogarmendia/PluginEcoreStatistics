@@ -738,6 +738,8 @@ public class EcoreStatisticsDialog extends Dialog{
 					EList<EReference> listEReferences = eClass.getEReferences();
 					
 					Node sourceNode = mapElements.get(eClass);
+					//Take into account the SubClasses of the Node
+					SubClasses(sourceNode,subGraph,arrayEAllClasses,mapElements,ecoreStats.getList_classes());
 					
 					while (itEAllReferences.hasNext()) {
 						

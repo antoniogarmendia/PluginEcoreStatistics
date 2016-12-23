@@ -58,6 +58,9 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/directSubclasses"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/directComposition"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//Node/insideRecursion"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//Node/icon"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Node/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MetaModelGraph.ecore#//Node/extension"/>
     </genClasses>
     <genClasses image="false" ecoreClass="MetaModelGraph.ecore#//Relation">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MetaModelGraph.ecore#//Relation/target"/>

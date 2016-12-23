@@ -394,13 +394,40 @@ public interface MetaModelGraphPackage extends EPackage {
 	int NODE__INSIDE_RECURSION = 9;
 
 	/**
+	 * The feature id for the '<em><b>Icon</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NODE__ICON = 10;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NODE__NAME = 11;
+
+	/**
+	 * The feature id for the '<em><b>Extension</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NODE__EXTENSION = 12;
+
+	/**
 	 * The number of structural features of the '<em>Node</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int NODE_FEATURE_COUNT = 10;
+	int NODE_FEATURE_COUNT = 13;
 
 	/**
 	 * The number of operations of the '<em>Node</em>' class.
@@ -957,6 +984,39 @@ public interface MetaModelGraphPackage extends EPackage {
 	EAttribute getNode_InsideRecursion();
 
 	/**
+	 * Returns the meta object for the attribute '{@link MetaModelGraph.Node#getIcon <em>Icon</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Icon</em>'.
+	 * @see MetaModelGraph.Node#getIcon()
+	 * @see #getNode()
+	 * @generated
+	 */
+	EAttribute getNode_Icon();
+
+	/**
+	 * Returns the meta object for the reference '{@link MetaModelGraph.Node#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Name</em>'.
+	 * @see MetaModelGraph.Node#getName()
+	 * @see #getNode()
+	 * @generated
+	 */
+	EReference getNode_Name();
+
+	/**
+	 * Returns the meta object for the attribute '{@link MetaModelGraph.Node#getExtension <em>Extension</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Extension</em>'.
+	 * @see MetaModelGraph.Node#getExtension()
+	 * @see #getNode()
+	 * @generated
+	 */
+	EAttribute getNode_Extension();
+
+	/**
 	 * Returns the meta object for class '{@link MetaModelGraph.Relation <em>Relation</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1342,6 +1402,30 @@ public interface MetaModelGraphPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute NODE__INSIDE_RECURSION = eINSTANCE.getNode_InsideRecursion();
+
+		/**
+		 * The meta object literal for the '<em><b>Icon</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute NODE__ICON = eINSTANCE.getNode_Icon();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference NODE__NAME = eINSTANCE.getNode_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Extension</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute NODE__EXTENSION = eINSTANCE.getNode_Extension();
 
 		/**
 		 * The meta object literal for the '{@link MetaModelGraph.impl.RelationImpl <em>Relation</em>}' class.

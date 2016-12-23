@@ -157,9 +157,9 @@ public class CompositionImpl extends RelationImpl implements Composition {
 		if (newParentNode != parentNode) {
 			NotificationChain msgs = null;
 			if (parentNode != null)
-				msgs = ((InternalEObject)parentNode).eInverseRemove(this, MetaModelGraphPackage.NODE__DIRECT_COMPOSITION, Node.class, msgs);
+				msgs = ((InternalEObject)parentNode).eInverseRemove(this, MetaModelGraphPackage.NODE__COMPOSITIONS, Node.class, msgs);
 			if (newParentNode != null)
-				msgs = ((InternalEObject)newParentNode).eInverseAdd(this, MetaModelGraphPackage.NODE__DIRECT_COMPOSITION, Node.class, msgs);
+				msgs = ((InternalEObject)newParentNode).eInverseAdd(this, MetaModelGraphPackage.NODE__COMPOSITIONS, Node.class, msgs);
 			msgs = basicSetParentNode(newParentNode, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
@@ -177,7 +177,7 @@ public class CompositionImpl extends RelationImpl implements Composition {
 		switch (featureID) {
 			case MetaModelGraphPackage.COMPOSITION__PARENT_NODE:
 				if (parentNode != null)
-					msgs = ((InternalEObject)parentNode).eInverseRemove(this, MetaModelGraphPackage.NODE__DIRECT_COMPOSITION, Node.class, msgs);
+					msgs = ((InternalEObject)parentNode).eInverseRemove(this, MetaModelGraphPackage.NODE__COMPOSITIONS, Node.class, msgs);
 				return basicSetParentNode((Node)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);

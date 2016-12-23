@@ -4,6 +4,7 @@ package MetaModelGraph;
 
 import org.eclipse.emf.common.util.EList;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
@@ -26,6 +27,9 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link MetaModelGraph.Node#getDirectSubclasses <em>Direct Subclasses</em>}</li>
  *   <li>{@link MetaModelGraph.Node#getDirectComposition <em>Direct Composition</em>}</li>
  *   <li>{@link MetaModelGraph.Node#isInsideRecursion <em>Inside Recursion</em>}</li>
+ *   <li>{@link MetaModelGraph.Node#getIcon <em>Icon</em>}</li>
+ *   <li>{@link MetaModelGraph.Node#getName <em>Name</em>}</li>
+ *   <li>{@link MetaModelGraph.Node#getExtension <em>Extension</em>}</li>
  * </ul>
  *
  * @see MetaModelGraph.MetaModelGraphPackage#getNode()
@@ -36,6 +40,7 @@ public interface Node extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Compositions</b></em>' reference list.
 	 * The list contents are of type {@link MetaModelGraph.Composition}.
+	 * It is bidirectional and its opposite is '{@link MetaModelGraph.Composition#getParentNode <em>Parent Node</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Compositions</em>' reference list isn't clear,
@@ -44,7 +49,8 @@ public interface Node extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Compositions</em>' reference list.
 	 * @see MetaModelGraph.MetaModelGraphPackage#getNode_Compositions()
-	 * @model
+	 * @see MetaModelGraph.Composition#getParentNode
+	 * @model opposite="parentNode"
 	 * @generated
 	 */
 	EList<Composition> getCompositions();
@@ -178,7 +184,6 @@ public interface Node extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Direct Composition</b></em>' reference list.
 	 * The list contents are of type {@link MetaModelGraph.Composition}.
-	 * It is bidirectional and its opposite is '{@link MetaModelGraph.Composition#getParentNode <em>Parent Node</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Direct Composition</em>' reference list isn't clear,
@@ -187,8 +192,7 @@ public interface Node extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Direct Composition</em>' reference list.
 	 * @see MetaModelGraph.MetaModelGraphPackage#getNode_DirectComposition()
-	 * @see MetaModelGraph.Composition#getParentNode
-	 * @model opposite="parentNode"
+	 * @model
 	 * @generated
 	 */
 	EList<Composition> getDirectComposition();
@@ -218,5 +222,83 @@ public interface Node extends EObject {
 	 * @generated
 	 */
 	void setInsideRecursion(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Icon</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Icon</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Icon</em>' attribute.
+	 * @see #setIcon(String)
+	 * @see MetaModelGraph.MetaModelGraphPackage#getNode_Icon()
+	 * @model
+	 * @generated
+	 */
+	String getIcon();
+
+	/**
+	 * Sets the value of the '{@link MetaModelGraph.Node#getIcon <em>Icon</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Icon</em>' attribute.
+	 * @see #getIcon()
+	 * @generated
+	 */
+	void setIcon(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Name</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Name</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Name</em>' reference.
+	 * @see #setName(EAttribute)
+	 * @see MetaModelGraph.MetaModelGraphPackage#getNode_Name()
+	 * @model
+	 * @generated
+	 */
+	EAttribute getName();
+
+	/**
+	 * Sets the value of the '{@link MetaModelGraph.Node#getName <em>Name</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Name</em>' reference.
+	 * @see #getName()
+	 * @generated
+	 */
+	void setName(EAttribute value);
+
+	/**
+	 * Returns the value of the '<em><b>Extension</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Extension</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Extension</em>' attribute.
+	 * @see #setExtension(String)
+	 * @see MetaModelGraph.MetaModelGraphPackage#getNode_Extension()
+	 * @model
+	 * @generated
+	 */
+	String getExtension();
+
+	/**
+	 * Sets the value of the '{@link MetaModelGraph.Node#getExtension <em>Extension</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Extension</em>' attribute.
+	 * @see #getExtension()
+	 * @generated
+	 */
+	void setExtension(String value);
 
 } // Node

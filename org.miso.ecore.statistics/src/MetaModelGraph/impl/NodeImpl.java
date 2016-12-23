@@ -17,6 +17,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -46,6 +47,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link MetaModelGraph.impl.NodeImpl#getDirectSubclasses <em>Direct Subclasses</em>}</li>
  *   <li>{@link MetaModelGraph.impl.NodeImpl#getDirectComposition <em>Direct Composition</em>}</li>
  *   <li>{@link MetaModelGraph.impl.NodeImpl#isInsideRecursion <em>Inside Recursion</em>}</li>
+ *   <li>{@link MetaModelGraph.impl.NodeImpl#getIcon <em>Icon</em>}</li>
+ *   <li>{@link MetaModelGraph.impl.NodeImpl#getName <em>Name</em>}</li>
+ *   <li>{@link MetaModelGraph.impl.NodeImpl#getExtension <em>Extension</em>}</li>
  * </ul>
  *
  * @generated
@@ -162,6 +166,56 @@ public class NodeImpl extends MinimalEObjectImpl.Container implements Node {
 	protected boolean insideRecursion = INSIDE_RECURSION_EDEFAULT;
 
 	/**
+	 * The default value of the '{@link #getIcon() <em>Icon</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIcon()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String ICON_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getIcon() <em>Icon</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIcon()
+	 * @generated
+	 * @ordered
+	 */
+	protected String icon = ICON_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getName() <em>Name</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected EAttribute name;
+
+	/**
+	 * The default value of the '{@link #getExtension() <em>Extension</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getExtension()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String EXTENSION_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getExtension() <em>Extension</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getExtension()
+	 * @generated
+	 * @ordered
+	 */
+	protected String extension = EXTENSION_EDEFAULT;
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -187,7 +241,7 @@ public class NodeImpl extends MinimalEObjectImpl.Container implements Node {
 	 */
 	public EList<Composition> getCompositions() {
 		if (compositions == null) {
-			compositions = new EObjectResolvingEList<Composition>(Composition.class, this, MetaModelGraphPackage.NODE__COMPOSITIONS);
+			compositions = new EObjectWithInverseResolvingEList<Composition>(Composition.class, this, MetaModelGraphPackage.NODE__COMPOSITIONS, MetaModelGraphPackage.COMPOSITION__PARENT_NODE);
 		}
 		return compositions;
 	}
@@ -309,7 +363,7 @@ public class NodeImpl extends MinimalEObjectImpl.Container implements Node {
 	 */
 	public EList<Composition> getDirectComposition() {
 		if (directComposition == null) {
-			directComposition = new EObjectWithInverseResolvingEList<Composition>(Composition.class, this, MetaModelGraphPackage.NODE__DIRECT_COMPOSITION, MetaModelGraphPackage.COMPOSITION__PARENT_NODE);
+			directComposition = new EObjectResolvingEList<Composition>(Composition.class, this, MetaModelGraphPackage.NODE__DIRECT_COMPOSITION);
 		}
 		return directComposition;
 	}
@@ -340,14 +394,94 @@ public class NodeImpl extends MinimalEObjectImpl.Container implements Node {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getIcon() {
+		return icon;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setIcon(String newIcon) {
+		String oldIcon = icon;
+		icon = newIcon;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MetaModelGraphPackage.NODE__ICON, oldIcon, icon));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getName() {
+		if (name != null && name.eIsProxy()) {
+			InternalEObject oldName = (InternalEObject)name;
+			name = (EAttribute)eResolveProxy(oldName);
+			if (name != oldName) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MetaModelGraphPackage.NODE__NAME, oldName, name));
+			}
+		}
+		return name;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute basicGetName() {
+		return name;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setName(EAttribute newName) {
+		EAttribute oldName = name;
+		name = newName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MetaModelGraphPackage.NODE__NAME, oldName, name));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getExtension() {
+		return extension;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setExtension(String newExtension) {
+		String oldExtension = extension;
+		extension = newExtension;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MetaModelGraphPackage.NODE__EXTENSION, oldExtension, extension));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
+			case MetaModelGraphPackage.NODE__COMPOSITIONS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getCompositions()).basicAdd(otherEnd, msgs);
 			case MetaModelGraphPackage.NODE__RELATIONS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getRelations()).basicAdd(otherEnd, msgs);
-			case MetaModelGraphPackage.NODE__DIRECT_COMPOSITION:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getDirectComposition()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -360,10 +494,10 @@ public class NodeImpl extends MinimalEObjectImpl.Container implements Node {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
+			case MetaModelGraphPackage.NODE__COMPOSITIONS:
+				return ((InternalEList<?>)getCompositions()).basicRemove(otherEnd, msgs);
 			case MetaModelGraphPackage.NODE__RELATIONS:
 				return ((InternalEList<?>)getRelations()).basicRemove(otherEnd, msgs);
-			case MetaModelGraphPackage.NODE__DIRECT_COMPOSITION:
-				return ((InternalEList<?>)getDirectComposition()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -397,6 +531,13 @@ public class NodeImpl extends MinimalEObjectImpl.Container implements Node {
 				return getDirectComposition();
 			case MetaModelGraphPackage.NODE__INSIDE_RECURSION:
 				return isInsideRecursion();
+			case MetaModelGraphPackage.NODE__ICON:
+				return getIcon();
+			case MetaModelGraphPackage.NODE__NAME:
+				if (resolve) return getName();
+				return basicGetName();
+			case MetaModelGraphPackage.NODE__EXTENSION:
+				return getExtension();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -448,6 +589,15 @@ public class NodeImpl extends MinimalEObjectImpl.Container implements Node {
 			case MetaModelGraphPackage.NODE__INSIDE_RECURSION:
 				setInsideRecursion((Boolean)newValue);
 				return;
+			case MetaModelGraphPackage.NODE__ICON:
+				setIcon((String)newValue);
+				return;
+			case MetaModelGraphPackage.NODE__NAME:
+				setName((EAttribute)newValue);
+				return;
+			case MetaModelGraphPackage.NODE__EXTENSION:
+				setExtension((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -490,6 +640,15 @@ public class NodeImpl extends MinimalEObjectImpl.Container implements Node {
 			case MetaModelGraphPackage.NODE__INSIDE_RECURSION:
 				setInsideRecursion(INSIDE_RECURSION_EDEFAULT);
 				return;
+			case MetaModelGraphPackage.NODE__ICON:
+				setIcon(ICON_EDEFAULT);
+				return;
+			case MetaModelGraphPackage.NODE__NAME:
+				setName((EAttribute)null);
+				return;
+			case MetaModelGraphPackage.NODE__EXTENSION:
+				setExtension(EXTENSION_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -522,6 +681,12 @@ public class NodeImpl extends MinimalEObjectImpl.Container implements Node {
 				return directComposition != null && !directComposition.isEmpty();
 			case MetaModelGraphPackage.NODE__INSIDE_RECURSION:
 				return insideRecursion != INSIDE_RECURSION_EDEFAULT;
+			case MetaModelGraphPackage.NODE__ICON:
+				return ICON_EDEFAULT == null ? icon != null : !ICON_EDEFAULT.equals(icon);
+			case MetaModelGraphPackage.NODE__NAME:
+				return name != null;
+			case MetaModelGraphPackage.NODE__EXTENSION:
+				return EXTENSION_EDEFAULT == null ? extension != null : !EXTENSION_EDEFAULT.equals(extension);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -540,6 +705,10 @@ public class NodeImpl extends MinimalEObjectImpl.Container implements Node {
 		result.append(enumModularNotation);
 		result.append(", insideRecursion: ");
 		result.append(insideRecursion);
+		result.append(", icon: ");
+		result.append(icon);
+		result.append(", extension: ");
+		result.append(extension);
 		result.append(')');
 		return result.toString();
 	}

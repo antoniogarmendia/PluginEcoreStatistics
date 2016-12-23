@@ -41,7 +41,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Node">
     <eStructuralFeatures xsi:type="ecore:EReference" name="compositions" upperBound="-1"
-        eType="#//Composition"/>
+        eType="#//Composition" eOpposite="#//Composition/parentNode"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="references" upperBound="-1"
         eType="#//Reference"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="subClasses" upperBound="-1"
@@ -56,8 +56,11 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="directSubclasses" upperBound="-1"
         eType="#//SubClass"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="directComposition" upperBound="-1"
-        eType="#//Composition" eOpposite="#//Composition/parentNode"/>
+        eType="#//Composition"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="insideRecursion" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="icon" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="name" eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EAttribute"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="extension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Relation" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Node"
@@ -66,7 +69,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Composition" eSuperTypes="#//Relation">
     <eStructuralFeatures xsi:type="ecore:EReference" name="eReference" eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EReference"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="parentNode" eType="#//Node"
-        eOpposite="#//Node/directComposition"/>
+        eOpposite="#//Node/compositions"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Reference" eSuperTypes="#//Relation">
     <eStructuralFeatures xsi:type="ecore:EReference" name="eReference" eType="ecore:EClass platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EReference"/>

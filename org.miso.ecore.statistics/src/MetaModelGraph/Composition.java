@@ -50,7 +50,7 @@ public interface Composition extends Relation {
 
 	/**
 	 * Returns the value of the '<em><b>Parent Node</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link MetaModelGraph.Node#getDirectComposition <em>Direct Composition</em>}'.
+	 * It is bidirectional and its opposite is '{@link MetaModelGraph.Node#getCompositions <em>Compositions</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Parent Node</em>' reference isn't clear,
@@ -60,8 +60,8 @@ public interface Composition extends Relation {
 	 * @return the value of the '<em>Parent Node</em>' reference.
 	 * @see #setParentNode(Node)
 	 * @see MetaModelGraph.MetaModelGraphPackage#getComposition_ParentNode()
-	 * @see MetaModelGraph.Node#getDirectComposition
-	 * @model opposite="directComposition"
+	 * @see MetaModelGraph.Node#getCompositions
+	 * @model opposite="compositions"
 	 * @generated
 	 */
 	Node getParentNode();
